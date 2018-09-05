@@ -58,7 +58,9 @@ public class MeshGen
                         float x = (float) (Math.cos(theta) * Math.sin(currDegree));
                         float z = (float) (Math.cos(theta) * Math.cos(currDegree));
                         System.out.println(x + " " + currY + " " + z);
-                        mesh.positions.add(new Vector3(x, currY, z));
+                        Vector3 vec = new Vector3(x, currY, z);
+                        mesh.positions.add(vec);
+                        mesh.normals.add(vec);
                         currDegree += degreeIncrement;
                     }
                     currDegree = 0.0f;
@@ -66,12 +68,13 @@ public class MeshGen
                 }
                 mesh.positions.add(new Vector3(0.0f, -1.0f, 0.0f));
 
-                // create faces
+                // create top faces
                 for (int i = 1; i <= n; i++) {
-                    OBJFace face = new OBJFace(3, false, false);
+                    OBJFace face = new OBJFace(3, false, true);
                     face.positions[0] = 0;
                     face.positions[1] = i;
                     face.positions[2] = (i%n) + 1;
+                    face.normals = face.positions;
                     mesh.faces.add(face);
                 }
 
@@ -81,26 +84,31 @@ public class MeshGen
                     int bottom = top + n;
                     System.out.println("top and bottom are " + top + " " + bottom);
                     for (int j = 0; j < n; j++) {
-                        OBJFace bottomTri = new OBJFace(3, false, false);
+                        OBJFace bottomTri = new OBJFace(3, false, true);
                         bottomTri.positions[0] = top + j;
                         bottomTri.positions[1] = bottom + j;
                         bottomTri.positions[2] = (bottom + 1 + j >= bottom + n) ? bottom : bottom + 1 + j;
+                        bottomTri.normals = bottomTri.positions;
                         mesh.faces.add(bottomTri);
-                        OBJFace topTri = new OBJFace(3, false, false);
+                        OBJFace topTri = new OBJFace(3, false, true);
                         topTri.positions[0] = (bottom + 1 + j >=bottom + n) ? bottom : bottom + 1 + j;
                         topTri.positions[1] = (top + 1 + j >= top + n) ? top : top + 1 + j;
                         topTri.positions[2] = top + j;
+                        topTri.normals = topTri.positions;
                         mesh.faces.add(topTri);
                     }
                 }
 
+                // create bottom faces
                 int total = n * (m-1) + 1;
                 System.out.println("total is " + total);
                 for (int i = 1; i <= n; i++) {
-                    OBJFace face = new OBJFace(3, false, false);
+                    OBJFace face = new OBJFace(3, false, true);
                     face.positions[0] = total;
                     face.positions[1] = total-n+(i%n)+1;
                     face.positions[2] = (total-n+(i%n) >= total) ? total-n+1 : total-n+(i%n);
+                    face.normals = face.positions;
+                    System.out.println("here we go " + face.normals[0] + " " + face.normals[1] + " " + face.normals[2]);
                     mesh.faces.add(face);
                 }
             }
