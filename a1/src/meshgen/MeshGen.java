@@ -67,7 +67,7 @@ public class MeshGen
                 mesh.positions.add(new Vector3(0.0f, -1.0f, 0.0f));
 
                 // create faces
-                for (int i = 0; i <= n; i++) {
+                for (int i = 1; i <= n; i++) {
                     OBJFace face = new OBJFace(3, false, false);
                     face.positions[0] = 0;
                     face.positions[1] = i;
@@ -94,13 +94,13 @@ public class MeshGen
                     }
                 }
 
-                int total = n * (m-1) + 2;
+                int total = n * (m-1) + 1;
                 System.out.println("total is " + total);
-                for (int i = 0; i < n; i++) {
+                for (int i = 1; i <= n; i++) {
                     OBJFace face = new OBJFace(3, false, false);
-                    face.positions[0] = total-1;
-                    face.positions[1] = total-(n+i)-1;
-                    face.positions[2] = (total-(n+i+1) < total-(n+i)) ? ;
+                    face.positions[0] = total;
+                    face.positions[1] = total-n+(i%n)+1;
+                    face.positions[2] = (total-n+(i%n) >= total) ? total-n+1 : total-n+(i%n);
                     mesh.faces.add(face);
                 }
             }
