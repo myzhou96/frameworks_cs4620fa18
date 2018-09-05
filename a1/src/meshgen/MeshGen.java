@@ -1,7 +1,6 @@
 package meshgen;
 
 import math.Vector3;
-
 import java.io.IOException;
 
 public class MeshGen
@@ -46,25 +45,6 @@ public class MeshGen
 
             if (shape.equals("sphere")) {
                 // create vertices
-//                float longAngle = FULL_DEGREE/m;
-//                float latAngle = FULL_DEGREE/n;
-//                float currLongAngle = 0.00f;
-//                float currLatAngle = 0.00f;
-//                while (currLongAngle < FULL_DEGREE) {
-//                    while (currLatAngle < FULL_DEGREE) {
-//                        System.out.println("angle is " + currLongAngle + " " + currLatAngle);
-//                        float x = (float) (Math.cos(currLongAngle) * Math.sin(currLatAngle));
-//                        float y = (float) (Math.sin(currLongAngle));
-//                        float z = (float) (Math.cos(currLongAngle) * Math.sin(currLongAngle));
-//                        System.out.println(x + " " + y + " " + z);
-//                        mesh.positions.add(new Vector3(x, y, z));
-//                        currLatAngle += latAngle;
-//                    }
-//                    currLongAngle += longAngle;
-//                    currLatAngle = 0.00f;
-//                    System.out.println("angle is " + currLongAngle + " " + currLatAngle);
-//                }
-
                 float yIncrement = (RADIUS*2)/m;
                 float currY = 1.0f - yIncrement;
                 float currDegree = 0.0f;
@@ -130,8 +110,6 @@ public class MeshGen
             } catch (IOException e) {
                 System.out.println("Writing failed.");
             }
-
-
         } else {
             // User provides an input OBJ mesh file, which the program reads in.
             // The mesh is assumed to have no normals (if normals are included in the input file, they are ignored).
