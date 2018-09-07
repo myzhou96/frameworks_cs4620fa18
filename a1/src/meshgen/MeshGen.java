@@ -11,8 +11,8 @@ public class MeshGen
     private static final float FULL_DEGREE = (float)(2*Math.PI);
     private static final float RADIUS = 1.0f;
 
-    private static int n;
-    private static int m;
+    private static int n = 32;
+    private static int m = 16;
     private static String shape = "";
     private static String inputFile = "";
     private static String outputFile = "";
@@ -466,6 +466,7 @@ public class MeshGen
                 } else if (args[i].equals("-o"))
                 {
                     // output file
+                    outputFile = args[i+1];
                 }
             }
 
