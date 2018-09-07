@@ -1,5 +1,6 @@
 package meshgen;
 
+import math.Vector2;
 import math.Vector3;
 import java.io.IOException;
 
@@ -45,56 +46,139 @@ public class MeshGen
 
             if (shape.equals("sphere")) {
                 // create vertices
-                float yIncrement = (RADIUS*2)/m;
-                float currY = 1.0f - yIncrement;
-                float currDegree = 0.0f;
-                float degreeIncrement = FULL_DEGREE/n;
+                Vector3 topVector = new Vector3(0.0f, 1.0f, 0.0f);
+                mesh.positions.add(topVector);
+                mesh.normals.add(topVector);
 
-                mesh.positions.add(new Vector3(0.0f, 1.0f, 0.0f));
-                while (currY > -1.0f) {
-                    double theta = Math.asin((double)(currY/RADIUS));
-                    while (currDegree < FULL_DEGREE) {
-                        System.out.println("degree is " + currDegree + " " + theta);
-                        float x = (float) (Math.cos(theta) * Math.sin(currDegree));
-                        float z = (float) (Math.cos(theta) * Math.cos(currDegree));
-                        System.out.println(x + " " + currY + " " + z);
-                        Vector3 vec = new Vector3(x, currY, z);
-                        mesh.positions.add(vec);
-                        mesh.normals.add(vec);
-                        currDegree += degreeIncrement;
-                    }
-                    currDegree = 0.0f;
-                    currY -= yIncrement;
+                // top uvs
+                float thetaIncrement = (float)(Math.PI/m);
+                float theta = (float)(Math.PI/2.0f);
+                float phiIncrement = FULL_DEGREE/n;
+                float phi = 0.0f;
+                while (phi <= FULL_DEGREE) {
+                    float v = (float)(theta/Math.PI) + 0.5f;
+                    float u = phi/FULL_DEGREE;
+                    mesh.uvs.add(new Vector2(u, v));
+                    phi += phiIncrement;
                 }
-                mesh.positions.add(new Vector3(0.0f, -1.0f, 0.0f));
+
+                System.out.println("look1 " + mesh.uvs.size());
+
+                theta -= thetaIncrement;
+                phi = 0.0f;
+
+                for (int i = 0; i < m-1; i++) {
+                    System.out.println("theta is " + theta);
+                    for (int j = 0; j < n; j++) {
+                        float x = (float)(Math.cos(theta) * Math.sin(phi));
+                        float y = (float)(Math.sin(theta));
+                        float z = (float)(Math.cos(theta) * Math.cos(phi));
+                        Vector3 vec = new Vector3(x, y, z);
+                        mesh.positions.add(vec);
+                        mesh.normals.add(vec); // same as positions
+
+                        // create uvs
+                        float v = theta/(float) Math.PI + 0.5f;
+                        float u = phi/FULL_DEGREE;
+                        mesh.uvs.add(new Vector2(u, v));
+
+                        phi += phiIncrement;
+                    }
+                    phi = 0.0f;
+                    theta -= thetaIncrement;
+                }
+
+                System.out.println("look2 " + mesh.uvs.size());
+
+                Vector3 bottomVector = new Vector3(0.0f, -1.0f, 0.0f);
+                mesh.positions.add(bottomVector);
+                mesh.normals.add(bottomVector);
+
+                // bottom uvs
+                theta = (float) -Math.PI/2.0f;
+                while (phi <= FULL_DEGREE) {
+                    float v = theta/(float) Math.PI + 0.5f;
+                    float u = phi/FULL_DEGREE;
+                    mesh.uvs.add(new Vector2(u, v));
+                    phi += phiIncrement;
+                }
+
+                System.out.println("look3 " + mesh.uvs.size());
+
+                // edge uvs
+                phi = FULL_DEGREE;
+                theta = (float) Math.PI/2.0f;
+                for (int i = 0; i < m; i++) {
+                    float v = theta/(float) Math.PI + 0.5f;
+                    float u = phi/FULL_DEGREE;
+                    mesh.uvs.add(new Vector2(u, v));
+                    theta -= thetaIncrement;
+                }
+                //mesh.uvs.add(new Vector2(1.0f, 0.0f));
+
+                System.out.println("look4 " + mesh.uvs.size());
+
+                int bottomIndex = (m-1)*(n)+n;
+                int edgeIndex = bottomIndex + n;
+
+                System.out.println("look5 " + bottomIndex + " " + edgeIndex);
 
                 // create top faces
                 for (int i = 1; i <= n; i++) {
-                    OBJFace face = new OBJFace(3, false, true);
+                    OBJFace face = new OBJFace(3, true, true);
                     face.positions[0] = 0;
                     face.positions[1] = i;
                     face.positions[2] = (i%n) + 1;
+
                     face.normals = face.positions;
+
+                    face.uvs[0] = i-1;
+                    face.uvs[1] = i-1+n;
+                    face.uvs[2] = i+n;
+
+                    if (i == n) {
+                        face.uvs[0] = edgeIndex;
+                        face.uvs[2] = edgeIndex + 1;
+                    }
+
                     mesh.faces.add(face);
                 }
 
                 // separate into rectangles
-                for (int i = 0; i < m-1; i++) {
+                for (int i = 0; i < m-2; i++) {
                     int top = (i*n) + 1;
                     int bottom = top + n;
                     System.out.println("top and bottom are " + top + " " + bottom);
                     for (int j = 0; j < n; j++) {
-                        OBJFace bottomTri = new OBJFace(3, false, true);
+                        OBJFace bottomTri = new OBJFace(3, true, true);
                         bottomTri.positions[0] = top + j;
                         bottomTri.positions[1] = bottom + j;
-                        bottomTri.positions[2] = (bottom + 1 + j >= bottom + n) ? bottom : bottom + 1 + j;
+                        bottomTri.positions[2] = bottom + ((1+j)%n);
+
                         bottomTri.normals = bottomTri.positions;
-                        mesh.faces.add(bottomTri);
-                        OBJFace topTri = new OBJFace(3, false, true);
-                        topTri.positions[0] = (bottom + 1 + j >=bottom + n) ? bottom : bottom + 1 + j;
-                        topTri.positions[1] = (top + 1 + j >= top + n) ? top : top + 1 + j;
+
+                        bottomTri.uvs[0] = top + j + n - 1;
+                        bottomTri.uvs[1] = bottom + j + n - 1;
+                        bottomTri.uvs[2] = bottom + ((1+j)%n) + n - 1;
+
+                        OBJFace topTri = new OBJFace(3, true, true);
+                        topTri.positions[0] = bottom + ((1+j)%n);
+                        topTri.positions[1] = top + ((1+j)%n);
                         topTri.positions[2] = top + j;
+
                         topTri.normals = topTri.positions;
+
+                        topTri.uvs[0] = bottom + ((1+j)%n) + n - 1;
+                        topTri.uvs[1] = top + 1 + j + n - 1;
+                        topTri.uvs[2] = top + j + n - 1;
+
+                        if (j == n-1) {
+                            bottomTri.uvs[2] = edgeIndex + i + 2;
+                            topTri.uvs[0] = edgeIndex + i + 2;
+                            topTri.uvs[1] = edgeIndex + i + 1;
+                        }
+
+                        mesh.faces.add(bottomTri);
                         mesh.faces.add(topTri);
                     }
                 }
@@ -102,15 +186,37 @@ public class MeshGen
                 // create bottom faces
                 int total = n * (m-1) + 1;
                 System.out.println("total is " + total);
-                for (int i = 1; i <= n; i++) {
-                    OBJFace face = new OBJFace(3, false, true);
+                for (int i = 0; i < n; i++) {
+                    OBJFace face = new OBJFace(3, true, true);
                     face.positions[0] = total;
-                    face.positions[1] = total-n+(i%n)+1;
-                    face.positions[2] = (total-n+(i%n) >= total) ? total-n+1 : total-n+(i%n);
+                    face.positions[1] = total-n+((i+1)%n);
+                    face.positions[2] = total-n+i;
+
                     face.normals = face.positions;
-                    System.out.println("here we go " + face.normals[0] + " " + face.normals[1] + " " + face.normals[2]);
+
+                    face.uvs[0] = bottomIndex+i;
+                    face.uvs[1] = bottomIndex-n+i+1;
+                    face.uvs[2] = bottomIndex-n+i;
+
+                    if (i == n-1) {
+                        face.uvs[0] = edgeIndex + m - 1;
+                        face.uvs[1] = edgeIndex + m - 2;
+                    }
+
                     mesh.faces.add(face);
                 }
+
+                System.out.println("this is " + mesh.uvs.get(edgeIndex + m - 2));
+                System.out.println("this is " + mesh.uvs.get(edgeIndex + m - 1));
+            }
+
+            System.out.println("is mesh valid " + mesh.isValid(true));
+
+            try {
+                OBJMesh rightMesh = new OBJMesh("data/sphere-reference.obj");
+                System.out.println("is mesh compare" + OBJMesh.compare(mesh, rightMesh, true, 0.01f));
+            } catch (Exception e) {
+                System.out.println("INCORRECT MESH-MAKING");
             }
 
             try {
