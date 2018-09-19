@@ -4,6 +4,7 @@ import ray1.IntersectionRecord;
 import ray1.Ray;
 import egl.math.Vector3;
 import egl.math.Vector3d;
+import egl.math.Vector2d;
 import egl.math.Matrix3d;
 import ray1.shader.Shader;
 import ray1.OBJFace;
@@ -102,13 +103,13 @@ public class Triangle extends Surface {
 	if(t < rayIn.start || t > rayIn.end) return false;
 	if(gamma < 0 || gamma > 1) return false;
 	if(beta < 0 || beta > 1-gamma) return false;
-	System.out.println("gamma: " + gamma + " beta: " + beta);
+//	System.out.println("gamma: " + gamma + " beta: " + beta);
 	IntersectionRecord inRecord = new IntersectionRecord();
 	inRecord.t = t;
 	Vector3d location = rayIn.origin.clone().add(rayIn.direction.clone().mul(t));
 	inRecord.location.set(location);
-	System.out.println("location: " + location);
-	System.out.println("time: " + t);
+//	System.out.println("location: " + location);
+//	System.out.println("time: " + t);
 	
 	if(norm == null){
 
@@ -116,13 +117,13 @@ public class Triangle extends Surface {
 		Vector3d normB = new Vector3d(owner.getMesh().getNormal(face, 1));
 		Vector3d normC = new Vector3d(owner.getMesh().getNormal(face, 2));
 		
-		System.out.println("normA: " + normA + " normB: " + normB + " normC: " + normC);
+//		System.out.println("normA: " + normA + " normB: " + normB + " normC: " + normC);
 		
 		Vector3d posA = new Vector3d(owner.getMesh().getPosition(face, 0));
 		Vector3d posB = new Vector3d(owner.getMesh().getPosition(face, 1));
 		Vector3d posC = new Vector3d(owner.getMesh().getPosition(face, 2));
 		
-		System.out.println("posA: " + posA + " posB: " + posB + " posC: " + posC);
+//		System.out.println("posA: " + posA + " posB: " + posB + " posC: " + posC);
 		
 		Vector3d n = normA.clone().mul(1-beta-gamma)
 				.add(normB.clone().mul(beta))
@@ -135,6 +136,16 @@ public class Triangle extends Surface {
 		inRecord.normal.set(norm);
 	}
 	
+	if(face.hasUVs()){
+		Vector2d uvA = new Vector2d(owner.getMesh().getUV(face, 0));
+		Vector2d uvB = new Vector2d(owner.getMesh().getUV(face, 1));
+		Vector2d uvC = new Vector2d(owner.getMesh().getUV(face, 2));
+		
+		Vector2d uv = uvA.clone().mul(1-beta-gamma)
+				.add(uvB.clone().mul(beta))
+				.add(uvC.clone().mul(gamma));
+		 inRecord.texCoords.set(uv);
+	}
 	
 	inRecord.surface = this;
 	outRecord.set(inRecord);

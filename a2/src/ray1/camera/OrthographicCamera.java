@@ -58,10 +58,10 @@ public class OrthographicCamera extends Camera {
     	Vector3 origin = new Vector3(
     			e.clone().add(this.basis_U.clone().mul(inU)
     					.add(this.basis_V.clone().mul(inV))));
-//    	System.out.println("origin");
-//    	System.out.print(this.basis_V);
+
     	Vector3 direction = new Vector3(this.basis_W.clone().negate());
     	outRay.set(new Vector3d(origin), new Vector3d(direction));
+    	outRay.makeOffsetRay();
     }
     
     public float transform(float x, float rangeLower, float rangeUpper){

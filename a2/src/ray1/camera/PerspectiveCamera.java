@@ -78,6 +78,7 @@ public class PerspectiveCamera extends Camera {
     			.add(basis_V.clone().mul(inV))
     	);
     	outRay.set(new Vector3d(e), new Vector3d(direction));
+    	outRay.makeOffsetRay();
     }
     
     public float transform(float x, float rangeLower, float rangeUpper){

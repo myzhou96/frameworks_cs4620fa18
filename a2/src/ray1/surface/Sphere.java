@@ -4,6 +4,7 @@ import ray1.IntersectionRecord;
 import ray1.Ray;
 import egl.math.Vector3;
 import egl.math.Vector3d;
+import egl.math.Vector2d;
 
 /**
  * Represents a sphere as a center and a radius.
@@ -45,11 +46,13 @@ public class Sphere extends Surface {
 	  if(sqrt1_2-sqrt2 < 0){
 		  return false;
 	  }
-//	  System.out.println("center" + center);
-//	  System.out.println("radius" + radius);
+//	  System.out.println("direction: " + d);
+//	  System.out.println("origin: " + e);
 	  double outside = d.clone().negate().dot(e.clone().sub(center));
 	  double t_sub = (outside-Math.sqrt(sqrt1_2-sqrt2))/(d.clone().dot(d));
 	  double t_pos = (outside+Math.sqrt(sqrt1_2-sqrt2))/(d.clone().dot(d));
+	  System.out.println("t_pos: " + t_pos + " t_sub: " + t_sub);
+	  System.out.println("start: " + rayIn.start + "end: " + rayIn.end);
 	 
 	  double t;
 	  if(t_sub < t_pos){
@@ -70,6 +73,12 @@ public class Sphere extends Surface {
 	  IntersectionRecord inRecord = new IntersectionRecord();
 	  Vector3d p = e.clone().add(d.clone().mul(t));
 	  Vector3d normal = p.clone().sub(center).mul(2).normalize();
+	  
+	  Vector3 dist = center.clone().sub(new Vector3(p.clone())).normalize();
+	  double tex_U = 0.5 + (Math.atan2(dist.z, dist.x))/(2*Math.PI);
+	  double tex_V = 0.5 - (Math.asin(dist.y))/(Math.PI);
+	  inRecord.texCoords.set(new Vector2d(tex_U, tex_V));
+	  
 //	  System.out.println("point of intersection: " + p);
 //	  System.out.println("normal: " + normal);
 	  inRecord.location.set(p);
