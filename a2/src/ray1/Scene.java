@@ -145,7 +145,16 @@ public class Scene {
 		//          4) If anyIntersection is true, return immediately.
 		//		    5) Set outRecord to the IntersectionRecord of the first object hit.
 		//		    6) If there was an intersection, return true; otherwise return false.
-
-		return false;
+//		System.out.println("initial outrecord: " + outRecord.location);
+		boolean found = false;
+		for(Surface s: surfaces){
+			if (s.intersect(outRecord, rayIn)){
+				if(anyIntersection == true) return true;
+				rayIn.end = outRecord.t;
+				found = true;
+			}
+		}
+//		System.out.println("final outrecord: " + outRecord.location);
+		return found;
 	}
 }
