@@ -3,6 +3,8 @@ package ray1.surface;
 import ray1.IntersectionRecord;
 import ray1.Ray;
 import egl.math.Vector3;
+import egl.math.Vector3d;
+import egl.math.Matrix3d;
 import ray1.shader.Shader;
 import ray1.OBJFace;
 
@@ -22,6 +24,9 @@ public class Triangle extends Surface {
   OBJFace face = null;
   
   double a, b, c, d, e, f;
+  
+  Vector3 v0_mine;
+ 
   public Triangle(Mesh owner, OBJFace face, Shader shader) {
     this.owner = owner;
     this.face = face;
@@ -46,6 +51,10 @@ public class Triangle extends Surface {
     e = v0.y-v2.y;
     f = v0.z-v2.z;
     
+    //get rid
+	v0_mine = v0.clone();
+    //
+    
     this.setShader(shader);
   }
 
@@ -61,9 +70,77 @@ public class Triangle extends Surface {
    */
   public boolean intersect(IntersectionRecord outRecord, Ray rayIn) {
     // TODO#A2: fill in this function.
-    
-	return false;
+
+	Vector3d v0 = new Vector3d(owner.getMesh().getPosition(face,0));
+	Vector3d v1 = new Vector3d(owner.getMesh().getPosition(face,1));
+	Vector3d v2 = new Vector3d(owner.getMesh().getPosition(face,2));
+	    
+    Matrix3d A_mat = new Matrix3d(new double[]{a, b, c, d, e, f, rayIn.direction.x, rayIn.direction.y, rayIn.direction.z});
+	double ADeterminant = A_mat.determinant();
+    Matrix3d beta_mat = new Matrix3d(
+			new Vector3d(v0.clone().sub(rayIn.origin)),
+			new Vector3d(v0.clone().sub(v2)),
+			new Vector3d(rayIn.direction)
+	);
+	beta_mat.transpose();
+	Matrix3d gamma_mat = new Matrix3d(
+			new Vector3d(v0.clone().sub(v1)),
+			new Vector3d(v0.clone().sub(rayIn.origin)),
+			new Vector3d(rayIn.direction)
+	);
+	gamma_mat.transpose();
+	Matrix3d t_mat = new Matrix3d(
+			new Vector3d(v0.clone().sub(v1)),
+			new Vector3d(v0.clone().sub(v2)),
+			new Vector3d(v0.clone().sub(rayIn.origin))
+	);
+	t_mat.transpose();
+	
+	double beta = beta_mat.determinant()/ADeterminant;
+	double gamma = gamma_mat.determinant()/ADeterminant;
+	double t = t_mat.determinant()/ADeterminant;
+	if(t < rayIn.start || t > rayIn.end) return false;
+	if(gamma < 0 || gamma > 1) return false;
+	if(beta < 0 || beta > 1-gamma) return false;
+	System.out.println("gamma: " + gamma + " beta: " + beta);
+	IntersectionRecord inRecord = new IntersectionRecord();
+	inRecord.t = t;
+	Vector3d location = rayIn.origin.clone().add(rayIn.direction.clone().mul(t));
+	inRecord.location.set(location);
+	System.out.println("location: " + location);
+	System.out.println("time: " + t);
+	
+	if(norm == null){
+
+		Vector3d normA = new Vector3d(owner.getMesh().getNormal(face, 0));
+		Vector3d normB = new Vector3d(owner.getMesh().getNormal(face, 1));
+		Vector3d normC = new Vector3d(owner.getMesh().getNormal(face, 2));
+		
+		System.out.println("normA: " + normA + " normB: " + normB + " normC: " + normC);
+		
+		Vector3d posA = new Vector3d(owner.getMesh().getPosition(face, 0));
+		Vector3d posB = new Vector3d(owner.getMesh().getPosition(face, 1));
+		Vector3d posC = new Vector3d(owner.getMesh().getPosition(face, 2));
+		
+		System.out.println("posA: " + posA + " posB: " + posB + " posC: " + posC);
+		
+		Vector3d n = normA.clone().mul(1-beta-gamma)
+				.add(normB.clone().mul(beta))
+				.add(normC.clone().mul(gamma));
+		inRecord.normal.set(n.clone().normalize());
+		
+		
+	}
+	else{
+		inRecord.normal.set(norm);
+	}
+	
+	
+	inRecord.surface = this;
+	outRecord.set(inRecord);
+    return true;
   }
+  
 
   /**
    * @see Object#toString()

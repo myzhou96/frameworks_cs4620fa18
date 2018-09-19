@@ -68,8 +68,8 @@ public class Sphere extends Surface {
 	  
 	  
 	  IntersectionRecord inRecord = new IntersectionRecord();
-	  Vector3d p = new Vector3d(e.clone().add(d.clone().mul(t)));
-	  Vector3d normal = new Vector3d(p.clone().sub(center).mul(2)).normalize();
+	  Vector3d p = e.clone().add(d.clone().mul(t));
+	  Vector3d normal = p.clone().sub(center).mul(2).normalize();
 //	  System.out.println("point of intersection: " + p);
 //	  System.out.println("normal: " + normal);
 	  inRecord.location.set(p);

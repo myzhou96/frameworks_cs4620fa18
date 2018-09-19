@@ -51,7 +51,7 @@ public class TriangleTests {
         System.out.println("Ray 0: origin = " + ray0.origin + "; dir = " + ray0.direction);
         System.out.println("----------------------------------------------");
         assertTrue(noNormalsTri.intersect(its, ray0));
-
+        
         System.out.println("Testing intersection location.");
         expectedLocation.set(0.0, 0.0, 1.4);
         TestUtils.assertVector3dEqual(its.location, expectedLocation);
@@ -145,6 +145,7 @@ public class TriangleTests {
         TestUtils.assertVector3dEqual(its.location, expectedLocation);
         System.out.println("Testing intersection normal.");
         expectedNormal.set(0.32493790519706517, 0.9157340964644564, 0.23631847650695648);
+        System.out.println("MY NORMAL: " + its.normal);
         TestUtils.assertVector3dEqual(its.normal, expectedNormal);
         System.out.println("Testing intersection time.");
         expectedT = 2.4;
