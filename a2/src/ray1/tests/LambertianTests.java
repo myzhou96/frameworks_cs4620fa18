@@ -58,7 +58,7 @@ public class LambertianTests {
         System.out.println("All tests passed.\n");
     }
 
-//    @Test
+    @Test
     public void testMultipleLights() {
         System.out.println("\nTesting Lambertian shader with a multiple point sources.");
         System.out.println("==============================================");

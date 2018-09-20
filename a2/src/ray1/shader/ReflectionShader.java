@@ -57,7 +57,6 @@ public abstract class ReflectionShader extends Shader {
 			//Better way to find scalar????
 			double lightT = (light.position.x - shadowRay.origin.x)/shadowRay.direction.x;
 			shadowRay.makeOffsetSegment(lightT);
-//			System.out.println("shadow ray origin: " + shadowRay.origin + " direction:" + shadowRay.direction);
 			
 			if(!scene.getAnyIntersection(shadowRay)){
 				Vector3d outgoing = ray.direction.clone().negate().normalize();
@@ -77,7 +76,7 @@ public abstract class ReflectionShader extends Shader {
 				Vector3 L_vect = brdfValue.clone().mul((float) Math.max(surfaceNormal.clone().dot(incoming), 0))
 						.mul(light.intensity.clone().div(distLight));
 				Colorf L = new Colorf(L_vect.x, L_vect.y, L_vect.z);
-//				System.out.println("Color: " + L);
+//				System.out.println("color: " + L);
 				outRadiance.add(L);
 			}
 		}

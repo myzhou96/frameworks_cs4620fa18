@@ -31,6 +31,24 @@ public class PhongBRDF extends BRDF {
 	{	
 		// TODO#A2: Evaluate the BRDF value of the modified Blinn-Phong reflection model, 
 		//          including both the specular and the diffuse part
+//		System.out.println("k_s: " + specularColor);
+//		System.out.println("exponent: " + exponent);
+		
+		Vector3d diffuseReflectance = new Vector3d(getDiffuseReflectance(texCoords).clone());
+		Vector3d diffuseCo = diffuseReflectance.div(Math.PI);
+//		System.out.println("diffuseCo: " + diffuseCo);
+		
+		Vector3d h_top = incoming.clone().add(outgoing);
+		Vector3d h = h_top.normalize();
+//		System.out.println("h: " + h);
+		
+//		float max = (float)Math.pow(Math.max(surfaceNormal.clone().dot(h), 0), exponent);
+		float specTerm = (float)Math.pow(Math.max(surfaceNormal.clone().dot(h), 0), exponent);
+		Vector3d test = new Vector3d(specularColor.clone().mul(specTerm));
+		Vector3d vect = diffuseCo.add(test);
+//		Vector3d vect = diffuseCo.add(new Vector3d(specularColor.clone().mul(max)));
+//		System.out.println("phong val: " + vect);
+		BRDFValue.set((float)vect.x, (float)vect.y, (float)vect.z);
 		
 	}
 
