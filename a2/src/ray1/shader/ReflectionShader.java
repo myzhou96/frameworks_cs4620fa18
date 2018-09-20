@@ -1,7 +1,11 @@
 package ray1.shader;
 
 import egl.math.Colorf;
+import egl.math.Vector3d;
+import egl.math.Vector3;
+import egl.math.Vector2;
 import ray1.IntersectionRecord;
+import ray1.Light;
 import ray1.Ray;
 import ray1.Scene;
 
@@ -45,7 +49,38 @@ public abstract class ReflectionShader extends Shader {
 		//			direction computed in 6a) (Hint: remember to call makeOffsetRay to avoid self-intersecting)
 		// 		6c) call RayTracer.shadeRay() with the mirror reflection ray and (depth+1)
 		// 		6d) add returned color value in 6c) to output
+		outRadiance.setZero();
 		
+		for(Light light: scene.getLights()){
+			Vector3d incoming = new Vector3d(light.position.clone().sub(new Vector3(record.location)).normalize());
+			Ray shadowRay = new Ray(record.location.clone(), incoming);
+			//Better way to find scalar????
+			double lightT = (light.position.x - shadowRay.origin.x)/shadowRay.direction.x;
+			shadowRay.makeOffsetSegment(lightT);
+//			System.out.println("shadow ray origin: " + shadowRay.origin + " direction:" + shadowRay.direction);
+			
+			if(!scene.getAnyIntersection(shadowRay)){
+				Vector3d outgoing = ray.direction.clone().negate().normalize();
+				Vector3d surfaceNormal = record.normal.clone().normalize();
+				Vector2 texCoords = new Vector2(record.texCoords.clone().normalize());
+				Colorf brdfValue = new Colorf(1, 1, 1);
+				brdf.evalBRDF(incoming, outgoing, surfaceNormal, texCoords, brdfValue);
+				float distLight = light.position.clone().distSq(new Vector3(record.location.clone()));
+				
+//				System.out.println("brdf value: " + brdfValue);
+//				System.out.println("intersection: " + record.location);
+//				System.out.println("light position: " + light.position);
+//				System.out.println("distance of light: " + distLight);
+//				System.out.println("surfaceNormal: " + surfaceNormal);
+//				System.out.println("incoming: " + incoming);
+				
+				Vector3 L_vect = brdfValue.clone().mul((float) Math.max(surfaceNormal.clone().dot(incoming), 0))
+						.mul(light.intensity.clone().div(distLight));
+				Colorf L = new Colorf(L_vect.x, L_vect.y, L_vect.z);
+//				System.out.println("Color: " + L);
+				outRadiance.add(L);
+			}
+		}
 	}
 
 }

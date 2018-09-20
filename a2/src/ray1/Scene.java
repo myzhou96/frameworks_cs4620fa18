@@ -147,8 +147,8 @@ public class Scene {
 		//		    6) If there was an intersection, return true; otherwise return false.
 		
 		boolean found = false;
-		for(Surface s: surfaces){
-			if (s.intersect(outRecord, rayIn)){		
+		for(Surface s: surfaces){	
+			if (s.intersect(outRecord, rayIn)){	
 				if(anyIntersection == true) return true;
 				rayIn.end = outRecord.t;
 				found = true;

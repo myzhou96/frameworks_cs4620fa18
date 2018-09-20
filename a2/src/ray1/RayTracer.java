@@ -264,7 +264,7 @@ public class RayTracer {
 		if(depth > MAX_DEPTH) return;
 		IntersectionRecord inRecord = new IntersectionRecord();
 		if(scene.getFirstIntersection(inRecord, ray)){
-			System.out.println("T:" + inRecord.t);
+//			System.out.println("T:" + inRecord.t);
 			Shader shade = inRecord.surface.getShader();
 			shade.shade(outColor, scene, ray, inRecord, depth);
 //			outColor.setZero();

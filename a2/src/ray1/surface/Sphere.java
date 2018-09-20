@@ -51,8 +51,8 @@ public class Sphere extends Surface {
 	  double outside = d.clone().negate().dot(e.clone().sub(center));
 	  double t_sub = (outside-Math.sqrt(sqrt1_2-sqrt2))/(d.clone().dot(d));
 	  double t_pos = (outside+Math.sqrt(sqrt1_2-sqrt2))/(d.clone().dot(d));
-	  System.out.println("t_pos: " + t_pos + " t_sub: " + t_sub);
-	  System.out.println("start: " + rayIn.start + "end: " + rayIn.end);
+//	  System.out.println("t_pos: " + t_pos + " t_sub: " + t_sub);
+//	  System.out.println("start: " + rayIn.start + "end: " + rayIn.end);
 	 
 	  double t;
 	  if(t_sub < t_pos){
@@ -67,7 +67,7 @@ public class Sphere extends Surface {
 	  else{
 		  t = t_pos;
 	  }
-	  System.out.println("actual t: " + t + " t_pos: " + t_pos + " t _sub: " + t_sub);
+//	  System.out.println("actual t: " + t + " t_pos: " + t_pos + " t _sub: " + t_sub);
 	  
 	  
 	  IntersectionRecord inRecord = new IntersectionRecord();
