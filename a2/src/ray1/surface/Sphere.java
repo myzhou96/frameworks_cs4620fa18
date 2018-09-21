@@ -77,7 +77,7 @@ public class Sphere extends Surface {
 	  Vector3 dist = center.clone().sub(new Vector3(p.clone())).normalize();
 	  double tex_U = 0.5 + (Math.atan2(dist.z, dist.x))/(2*Math.PI);
 	  double tex_V = 0.5 - (Math.asin(dist.y))/(Math.PI);
-	  inRecord.texCoords.set(new Vector2d(tex_U, tex_V));
+	  inRecord.texCoords.set(new Vector2d(tex_U, tex_V).normalize());
 	  
 //	  System.out.println("point of intersection: " + p);
 //	  System.out.println("normal: " + normal);

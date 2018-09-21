@@ -21,19 +21,14 @@
     <image>../../textures/MoonLonLat.png</image>
   </texture>
 
-  <shader name="earth" type="MicrofacetBeckmann">
+  <shader name="earth" type="Lambertian">
     <texture ref="earthlonlat" />
-    <microfacetColor>0.2 0.2 0.2</microfacetColor>
     <diffuseColor>1 0 0</diffuseColor>
-    <nt>1.5</nt>
-    <alpha>0.2</alpha>
   </shader>
 
-  <shader name="moon" type="MicrofacetBeckmann">
+  <shader name="moon" type="Lambertian">
     <texture ref="moonlonlat" />
-    <microfacetColor>.8 .8 .8</microfacetColor>
-    <nt>1.5</nt>
-    <alpha>0.5</alpha>
+    <diffuseColor>.8 .8 .8</diffuseColor>
   </shader>
 
   <surface type="Sphere">

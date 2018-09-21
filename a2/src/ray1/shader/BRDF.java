@@ -27,9 +27,12 @@ public abstract class BRDF {
 		super();
 		this.diffuseReflectance.set(diffuseReflectance);
 		this.diffuseReflectanceTexture = diffuseReflectanceTexture;
+//		if(diffuseReflectanceTexture !=null) System.out.println("texture? " + this.diffuseReflectanceTexture);
 	}
 	
 	protected Colorf getDiffuseReflectance(Vector2 texCoords) {
+//		if(diffuseReflectanceTexture !=null) System.out.println("texture? " + this.diffuseReflectanceTexture);
+
 		return (diffuseReflectanceTexture == null) ? diffuseReflectance : diffuseReflectanceTexture.getTexColor(texCoords);
 	}
 

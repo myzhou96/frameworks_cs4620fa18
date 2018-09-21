@@ -144,7 +144,7 @@ public class Triangle extends Surface {
 		Vector2d uv = uvA.clone().mul(1-beta-gamma)
 				.add(uvB.clone().mul(beta))
 				.add(uvC.clone().mul(gamma));
-		 inRecord.texCoords.set(uv);
+		 inRecord.texCoords.set(uv.normalize());
 	}
 	
 	inRecord.surface = this;

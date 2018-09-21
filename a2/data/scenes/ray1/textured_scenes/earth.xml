@@ -18,12 +18,9 @@
     <image>../../textures/Earth.png</image>
   </texture>
 
-  <shader name="earth" type="MicrofacetBeckmann">
+  <shader name="earth" type="Lambertian">
     <texture ref = "earthTex" />
-    <microfacetColor>0.9 0.7 0.3</microfacetColor>
     <diffuseColor>0.9 0.7 0.3</diffuseColor>
-    <nt>10</nt>
-    <alpha>0.2</alpha>
   </shader>
 
   <surface type="Mesh">

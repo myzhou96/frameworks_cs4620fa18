@@ -13,7 +13,7 @@
   </camera>
   <backColor>.005 .005 .01</backColor>
   <image>
-    450 450
+    200 200
   </image>
   
   <texture name="teapotTex" type="ClampTexture">
@@ -28,12 +28,11 @@
     <diffuseColor>0 1 0</diffuseColor>
   </shader>
 
-  <shader name="teapot" type="MicrofacetBeckmann">
+  <shader name="teapot" type="Phong">
     <texture ref="teapotTex" />
-    <microfacetColor>.2 .3 .8</microfacetColor>
+    <specularColor>.2 .3 .8</specularColor>
     <diffuseColor>.2 .3 .8</diffuseColor>
-    <alpha>0.35</alpha>
-    <nt>1.5</nt>
+    <exponent>40</exponent>
   </shader>
 
   <surface type="Mesh">

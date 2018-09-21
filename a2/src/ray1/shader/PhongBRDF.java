@@ -33,7 +33,6 @@ public class PhongBRDF extends BRDF {
 		//          including both the specular and the diffuse part
 //		System.out.println("k_s: " + specularColor);
 //		System.out.println("exponent: " + exponent);
-		
 		Vector3d diffuseReflectance = new Vector3d(getDiffuseReflectance(texCoords).clone());
 		Vector3d diffuseCo = diffuseReflectance.div(Math.PI);
 //		System.out.println("diffuseCo: " + diffuseCo);

@@ -13,7 +13,7 @@
     <viewHeight>0.4</viewHeight>
   </camera>
   <image>
-    1000 800
+    500 400
   </image>
   <texture type="RepeatTexture" name="earthTex">
     <image>../../textures/Earth.png</image>
@@ -23,19 +23,15 @@
   
   <shader name="lamb" type="Lambertian"></shader>
 
-  <shader name="Microfacet" type="MicrofacetBeckmann">
-    <microfacetColor>0.9 0.7 0.8</microfacetColor>
+  <shader name="Phong" type="Phong">
+    <specularColor>0.9 0.7 0.8</specularColor>
     <diffuseColor>0.9 0.7 0.8</diffuseColor>
-    <nt>1</nt>
-    <alpha>0.8</alpha>
+    <exponent>40</exponent>
   </shader>
   
-  <shader name="earth" type="MicrofacetBeckmann">
+  <shader name="earth" type="Lambertian">
     <texture ref="earthTex" />
-    <microfacetColor>0.1 0.9 0.3</microfacetColor>
     <diffuseColor>0.1 0.9 0.3</diffuseColor>
-    <nt>1</nt>
-    <alpha>0.8</alpha>
   </shader>
   
   
@@ -51,7 +47,7 @@
   </surface>
   
   <surface type="Mesh">
-    <shader ref="Microfacet" />
+    <shader ref="Phong" />
     <data>../../meshes/ico3.obj</data>
   </surface>
   
@@ -73,7 +69,7 @@
   </surface>
   
   <surface type="Sphere">
-    <shader ref="Microfacet" />
+    <shader ref="Phong" />
     <center>0 3 -6</center>
     <radius>1</radius>
   </surface>
