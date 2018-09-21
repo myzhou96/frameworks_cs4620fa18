@@ -13,7 +13,7 @@
     <viewHeight>0.4</viewHeight>
   </camera>
   <image>
-    500 400
+    750 600
   </image>
   <texture type="RepeatTexture" name="earthTex">
     <image>../../textures/Earth.png</image>

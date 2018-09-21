@@ -71,13 +71,27 @@ public class Sphere extends Surface {
 	  
 	  
 	  IntersectionRecord inRecord = new IntersectionRecord();
-	  Vector3d p = e.clone().add(d.clone().mul(t));
+	  Vector3d p = new Vector3d();
+	  rayIn.evaluate(p, t);
 	  Vector3d normal = p.clone().sub(center).mul(2).normalize();
 	  
-	  Vector3 dist = center.clone().sub(new Vector3(p.clone())).normalize();
-	  double tex_U = 0.5 + (Math.atan2(dist.z, dist.x))/(2*Math.PI);
-	  double tex_V = 0.5 - (Math.asin(dist.y))/(Math.PI);
-	  inRecord.texCoords.set(new Vector2d(tex_U, tex_V).normalize());
+//	  Vector3 dist = center.clone().sub(new Vector3(p.clone().normalize())).normalize();
+//	  double tex_U = 0.5 + (Math.atan2(dist.z, dist.x))/(2*Math.PI);
+//	  double tex_V = 0.5 - (Math.asin(dist.y))/(Math.PI);
+	  
+//	  double theta = Math.atan2(-(p.z-center.z), p.x-center.x);
+//	  double phi = Math.acos(-(p.y-center.y)/radius);
+//	  double tex_U = (theta + Math.PI)/(2*Math.PI);
+//	  double tex_V = phi/Math.PI;
+//	  
+	  //https://gamedev.stackexchange.com/questions/98068/how-do-i-wrap-an-image-around-a-sphere
+      double theta = Math.asin(normal.y);
+      double phi = Math.atan2(normal.x, normal.z);
+      double tex_U = (phi + Math.PI)/M_2PI;
+      double tex_V = (theta - (Math.PI/2))/Math.PI;
+
+      
+	  inRecord.texCoords.set(new Vector2d(tex_U, tex_V));
 	  
 //	  System.out.println("point of intersection: " + p);
 //	  System.out.println("normal: " + normal);

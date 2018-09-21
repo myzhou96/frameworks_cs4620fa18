@@ -54,7 +54,7 @@ public abstract class ReflectionShader extends Shader {
 		//used to be in the if scene.getAny statement, see if it changed anything
 		Vector3d outgoing = ray.direction.clone().negate().normalize();
 		Vector3d surfaceNormal = record.normal.clone().normalize();
-		Vector2 texCoords = new Vector2(record.texCoords.clone().normalize());
+		Vector2 texCoords = new Vector2(record.texCoords.clone());
 		for(Light light: scene.getLights()){
 			Vector3d incoming = new Vector3d(light.position.clone().sub(new Vector3(record.location)).normalize());
 			Ray shadowRay = new Ray(record.location.clone(), incoming);
