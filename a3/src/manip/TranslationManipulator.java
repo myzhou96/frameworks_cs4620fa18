@@ -61,10 +61,6 @@ public class TranslationManipulator extends Manipulator {
 		curMDir.set(viewProjection.clone().invert().mulDir(curMDir).normalize());
 		lastMDir.set(viewProjection.clone().invert().mulDir(lastMDir).normalize());
 		
-		System.out.println("curMDir: " + curMDir);
-//		System.out.println("curMDirTest: " + viewProjection.clone().invert().mulDir(diff));
-		
-		
 		//Manipulator is all in world space
 		//A plane can be defined by a normal vector and an origin, now need to find normal 
 		Vector3 manipOrigin = new Vector3(0, 0, 0);
@@ -72,15 +68,15 @@ public class TranslationManipulator extends Manipulator {
 		Vector3 manipAxis = new Vector3(); //1 vector in plane is manipulator axis
 		if(this.axis == ManipulatorAxis.X){
 			System.out.println("X");
-			manipAxis = this.getWorldTransform().clone().mulDir(new Vector3(1, 0, 0));
+			manipAxis = this.getReferencedTransform().clone().mulDir(new Vector3(1, 0, 0));
 		}
 		else if(this.axis == ManipulatorAxis.Y){
 			System.out.println("Y");
-			manipAxis = this.getWorldTransform().clone().mulDir(new Vector3(0, 1, 0));
+			manipAxis = this.getReferencedTransform().clone().mulDir(new Vector3(0, 1, 0));
 		}
 		else{
 			System.out.println("Z");
-			manipAxis = this.getWorldTransform().clone().mulDir(new Vector3(0, 0, 1));
+			manipAxis = this.getReferencedTransform().clone().mulDir(new Vector3(0, 0, 1));
 		}
 		manipAxis.normalize();
 		
