@@ -106,35 +106,28 @@ public class RotationManipulator extends Manipulator {
 		
 		Vector3 angleVectorC = intersectionC.clone().sub(manipOrigin).normalize();
 		Vector3 angleVectorL = intersectionL.clone().sub(manipOrigin).normalize();
-		float dotAngle = angleVectorC.clone().dot(angleVectorL.clone());
-		float angle = (float) Math.acos(dotAngle);
-		if(Float.isNaN(angle) || angle == 0.0) return;
-		System.out.println("angle: " + angle);
-		
+//		float dotAngle = angleVectorC.clone().dot(angleVectorL.clone());
+//		float angle = (float) Math.acos(dotAngle);
+		double angle = angleVectorC.angle(angleVectorL);
+		if(Double.isNaN(angle) || angle == 0.0) return;
 		//use cross product to get normal to the plane from intersections
 		Vector3 crossAngle = intersectionC.clone().cross(intersectionL);
-		if(crossAngle.dot(manipAxis) > 0){
+		if(crossAngle.dot(manipNormalL) < 0){
 			angle *= -1;
 		}
-		
+		System.out.println("angle: " + angle);
 		Matrix4 T = new Matrix4();
 		System.out.println(this.axis);
 		if(this.axis == ManipulatorAxis.X){
-			T = this.reference.rotationX.createRotationX(angle);
-			this.reference.translation.mulAfter(T);
-			T = this.reference.rotationX.createRotationY(angle);
-			this.reference.translation.mulAfter(T);
-			T = this.reference.rotationX.createRotationZ(angle);
+			T = this.reference.rotationX.createRotationX((float)angle);
 			this.reference.translation.mulAfter(T);
 		}
 		else if(this.axis == ManipulatorAxis.Y){
-			T = this.reference.rotationX.createRotationY(angle);
-			this.reference.translation.mulAfter(T);
-			T = this.reference.rotationX.createRotationZ(angle);
+			T = this.reference.rotationX.createRotationY((float)angle);
 			this.reference.translation.mulAfter(T);
 		}
 		else if(this.axis == ManipulatorAxis.Z){
-			T = this.reference.rotationX.createRotationZ(angle);
+			T = this.reference.rotationX.createRotationZ((float)angle);
 			this.reference.translation.mulAfter(T);
 		}
 

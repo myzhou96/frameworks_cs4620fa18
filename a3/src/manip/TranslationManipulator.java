@@ -68,15 +68,15 @@ public class TranslationManipulator extends Manipulator {
 		Vector3 manipAxis = new Vector3(); //1 vector in plane is manipulator axis
 		if(this.axis == ManipulatorAxis.X){
 			System.out.println("X");
-			manipAxis = this.getReferencedTransform().clone().mulDir(new Vector3(1, 0, 0));
+			manipAxis.set(this.getReferencedTransform().clone().mulDir(new Vector3(1, 0, 0)));
 		}
 		else if(this.axis == ManipulatorAxis.Y){
 			System.out.println("Y");
-			manipAxis = this.getReferencedTransform().clone().mulDir(new Vector3(0, 1, 0));
+			manipAxis.set(this.getReferencedTransform().clone().mulDir(new Vector3(0, 1, 0)));
 		}
 		else{
 			System.out.println("Z");
-			manipAxis = this.getReferencedTransform().clone().mulDir(new Vector3(0, 0, 1));
+			manipAxis.set(this.getReferencedTransform().clone().mulDir(new Vector3(0, 0, 1)));
 		}
 		manipAxis.normalize();
 		
@@ -112,11 +112,12 @@ public class TranslationManipulator extends Manipulator {
 		//Now we need to find the points on the manipulator ray that are closest to these points
 		float t1 = intersectionC.clone().dot(manipAxis);
 		float t2 = intersectionL.clone().dot(manipAxis);
-		t2 = intersectionC.clone().dot(manipAxis)/(manipAxis.len());
-		t1 = intersectionL.clone().dot(manipAxis)/(manipAxis.len());
-		System.out.println("t1: " + t1);
-		System.out.println("t2: " + t2);
-		System.out.println("final t:" + (t2-t1));
+		t2 = intersectionC.clone().dot(manipAxis)/(manipAxis.clone().lenSq())/11;
+		t1 = intersectionL.clone().dot(manipAxis)/(manipAxis.clone().lenSq())/11;
+//		System.out.println("t1: " + t1);
+//		System.out.println("t2: " + t2);
+//		System.out.println("final t:" + (t2-t1));
+		System.out.println("manipAxis: " + manipAxis);
 		Matrix4 T = new Matrix4();
 		if(this.axis == ManipulatorAxis.X){
 			T = this.reference.translation.createTranslation(new Vector3(t2-t1, 0, 0));
