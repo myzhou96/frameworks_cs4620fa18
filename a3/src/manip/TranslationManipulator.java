@@ -44,8 +44,8 @@ public class TranslationManipulator extends Manipulator {
 //				break;
 //		}
 		
-		//view projection matrix transforms world space coordinates into coordinates of the canonical view volume
-		
+		//view projection matrix: world -> canonical view volume
+		//getReferencedTransform: object -> world
 		Vector3 lastMCanF = new Vector3(lastMousePos.x, lastMousePos.y, -1);
 		Vector3 lastMCanN = new Vector3(lastMousePos.x, lastMousePos.y, 1);
 		Vector3 curMCanF = new Vector3(curMousePos.x, curMousePos.y, -1);
@@ -64,7 +64,7 @@ public class TranslationManipulator extends Manipulator {
 		//Manipulator is all in world space
 		//A plane can be defined by a normal vector and an origin, now need to find normal 
 		Vector3 manipOrigin = new Vector3(0, 0, 0);
-		manipOrigin.set(this.getWorldTransform().clone().mulPos(manipOrigin));//in object space to world space
+		manipOrigin.set(this.getReferencedTransform().clone().mulPos(manipOrigin));//in object space to world space
 		Vector3 manipAxis = new Vector3(); //1 vector in plane is manipulator axis
 		if(this.axis == ManipulatorAxis.X){
 			System.out.println("X");
@@ -83,9 +83,9 @@ public class TranslationManipulator extends Manipulator {
 		//Another vector is perpendicular to this axis and parallel to the view plane. 
 		//A vector is parallel to the view plane if it is perpendicular to its plane's normal, and 
 		//you can take the mouse ray's direction to be the normal of the view plane.
-		Vector3 imgNormalC = new Vector3(curMDir.negate());
+		Vector3 imgNormalC = new Vector3(curMDir.negate()); //or should this be (0, 0, 1)
 		imgNormalC.set(viewProjection.clone().invert().mulDir(imgNormalC)).normalize();		
-		Vector3 imgNormalL = new Vector3(lastMDir.negate());
+		Vector3 imgNormalL = new Vector3(lastMDir.negate()); 
 		imgNormalL.set(viewProjection.clone().invert().mulDir(imgNormalL)).normalize();
 		
 		Vector3 perpToImgNormalC = imgNormalC.clone().cross(manipAxis).normalize();
@@ -104,19 +104,18 @@ public class TranslationManipulator extends Manipulator {
 		float tCurr = topC/(curMDir.clone().dot(manipNormalC));
 		float topL = manipOrigin.clone().sub(lastMWorldN).dot(manipNormalL);
 		float tLast = topL/(lastMDir.clone().dot(manipNormalL));
-		System.out.println("tCurr: " + tCurr);
-		System.out.println("tLast: " + tLast);
+		
 		
 		Vector3 intersectionC = curMWorldN.clone().add(curMDir.clone().mul(tCurr));
 		Vector3 intersectionL = lastMWorldN.clone().add(lastMDir.clone().mul(tLast));
 		
 		//Now we need to find the points on the manipulator ray that are closest to these points
-		//float t2 = manipOrigin.clone().sub(intersectionC).negate().dot(manipAxis.clone().sub(manipOrigin));
-		//float t1 = manipOrigin.clone().sub(intersectionL).negate().dot(manipAxis.clone().sub(manipOrigin));
-		float t1 = intersectionC.clone().dot(manipAxis);//manipOrigin.clone().sub(intersectionC).dot(manipNormalC);
-		float t2 = intersectionL.clone().dot(manipAxis);//manipOrigin.clone().sub(intersectionL).dot(manipNormalL);
+		float t1 = intersectionC.clone().dot(manipAxis);
+		float t2 = intersectionL.clone().dot(manipAxis);
 		t2 = intersectionC.clone().dot(manipAxis)/(manipAxis.len());
 		t1 = intersectionL.clone().dot(manipAxis)/(manipAxis.len());
+		System.out.println("t1: " + t1);
+		System.out.println("t2: " + t2);
 		System.out.println("final t:" + (t2-t1));
 		Matrix4 T = new Matrix4();
 		if(this.axis == ManipulatorAxis.X){
@@ -131,6 +130,7 @@ public class TranslationManipulator extends Manipulator {
 			T = this.reference.translation.createTranslation(new Vector3(0, 0, t2-t1));
 			this.reference.translation.mulAfter(T);
 		}		
+		System.out.println(this.reference.translation);
 	
 	}
 
