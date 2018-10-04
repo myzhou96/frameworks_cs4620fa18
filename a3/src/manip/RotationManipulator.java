@@ -114,20 +114,21 @@ public class RotationManipulator extends Manipulator {
 		Vector3 crossAngle = angleVectorC.clone().cross(angleVectorL);
 		if(crossAngle.dot(manipNormalL) < 0){
 			angle *= -1;
+			
 		}
-		System.out.println("angle: " + angle);
+		
 		Matrix4 T = new Matrix4();
 		if(this.axis == ManipulatorAxis.X){
 			T = this.reference.rotationX.createRotationX((float)angle);
-			this.reference.translation.mulAfter(T);
+			this.reference.rotationX.mulAfter(T);
 		}
 		else if(this.axis == ManipulatorAxis.Y){
-			T = this.reference.rotationX.createRotationY((float)angle);
-			this.reference.translation.mulAfter(T);
+			T = this.reference.rotationY.createRotationY((float)angle);
+			this.reference.rotationY.mulAfter(T);
 		}
 		else if(this.axis == ManipulatorAxis.Z){
-			T = this.reference.rotationX.createRotationZ((float)angle);
-			this.reference.translation.mulAfter(T);
+			T = this.reference.rotationZ.createRotationZ((float)angle);
+			this.reference.rotationZ.mulAfter(T);
 		}
 
 	}
