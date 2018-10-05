@@ -46,6 +46,7 @@ public class TranslationManipulator extends Manipulator {
 		
 		//view projection matrix: world -> canonical view volume
 		//getReferencedTransform: object -> world
+		if(lastMousePos == curMousePos) return;
 		Vector3 lastMCanF = new Vector3(lastMousePos.x, lastMousePos.y, -1);
 		Vector3 lastMCanN = new Vector3(lastMousePos.x, lastMousePos.y, 1);
 		Vector3 curMCanF = new Vector3(curMousePos.x, curMousePos.y, -1);
@@ -116,19 +117,20 @@ public class TranslationManipulator extends Manipulator {
 		t1 = intersectionL.clone().dot(manipAxis)/(manipAxis.clone().lenSq())/11;
 //		System.out.println("t1: " + t1);
 //		System.out.println("t2: " + t2);
-//		System.out.println("final t:" + (t2-t1));
+		System.out.println("final t:" + (t2-t1));
 		System.out.println("manipAxis: " + manipAxis);
+		if(Double.isNaN(t2-t1)) return;
 		Matrix4 T = new Matrix4();
 		if(this.axis == ManipulatorAxis.X){
-			T = this.reference.translation.createTranslation(new Vector3(t2-t1, 0, 0));
+			T = T.createTranslation(new Vector3(t2-t1, 0, 0));
 			this.reference.translation.mulAfter(T);
 		}
 		else if(this.axis == ManipulatorAxis.Y){
-			T = this.reference.translation.createTranslation(new Vector3(0, t2-t1, 0));
+			T = T.createTranslation(new Vector3(0, t2-t1, 0));
 			this.reference.translation.mulAfter(T);
 		}
 		else if(this.axis == ManipulatorAxis.Z){
-			T = this.reference.translation.createTranslation(new Vector3(0, 0, t2-t1));
+			T = T.createTranslation(new Vector3(0, 0, t2-t1));
 			this.reference.translation.mulAfter(T);
 		}		
 		System.out.println(this.reference.translation);

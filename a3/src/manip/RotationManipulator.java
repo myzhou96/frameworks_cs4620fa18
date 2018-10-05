@@ -48,6 +48,8 @@ public class RotationManipulator extends Manipulator {
 		// Note that the mouse positions are given in coordinates that are normalized to the range [-1, 1]
 		//   for both X and Y. That is, the origin is the center of the screen, (-1,-1) is the bottom left
 		//   corner of the screen, and (1, 1) is the top right corner of the screen.
+		if(lastMousePos == curMousePos) return;
+		
 		Vector3 lastMCanF = new Vector3(lastMousePos.x, lastMousePos.y, -1);
 		Vector3 lastMCanN = new Vector3(lastMousePos.x, lastMousePos.y, 1);
 		Vector3 curMCanF = new Vector3(curMousePos.x, curMousePos.y, -1);
@@ -77,7 +79,7 @@ public class RotationManipulator extends Manipulator {
 		else{
 			manipAxis = this.getReferencedTransform().clone().mulDir(new Vector3(0, 0, 1));
 		}
-		manipAxis.normalize();
+//		manipAxis.normalize();
 		
 		//Another vector is perpendicular to this axis and parallel to the view plane. 
 		//A vector is parallel to the view plane if it is perpendicular to its plane's normal, and 
@@ -119,15 +121,15 @@ public class RotationManipulator extends Manipulator {
 		
 		Matrix4 T = new Matrix4();
 		if(this.axis == ManipulatorAxis.X){
-			T = this.reference.rotationX.createRotationX((float)angle);
+			T = T.createRotationX((float)angle);
 			this.reference.rotationX.mulAfter(T);
 		}
 		else if(this.axis == ManipulatorAxis.Y){
-			T = this.reference.rotationY.createRotationY((float)angle);
+			T = T.createRotationY((float)angle);
 			this.reference.rotationY.mulAfter(T);
 		}
 		else if(this.axis == ManipulatorAxis.Z){
-			T = this.reference.rotationZ.createRotationZ((float)angle);
+			T = T.createRotationZ((float)angle);
 			this.reference.rotationZ.mulAfter(T);
 		}
 
