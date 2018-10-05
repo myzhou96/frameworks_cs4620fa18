@@ -68,18 +68,16 @@ public class TranslationManipulator extends Manipulator {
 		manipOrigin.set(this.getReferencedTransform().clone().mulPos(manipOrigin));//in object space to world space
 		Vector3 manipAxis = new Vector3(); //1 vector in plane is manipulator axis
 		if(this.axis == ManipulatorAxis.X){
-			System.out.println("X");
 			manipAxis.set(this.getReferencedTransform().clone().mulDir(new Vector3(1, 0, 0)));
 		}
 		else if(this.axis == ManipulatorAxis.Y){
-			System.out.println("Y");
 			manipAxis.set(this.getReferencedTransform().clone().mulDir(new Vector3(0, 1, 0)));
 		}
 		else{
-			System.out.println("Z");
 			manipAxis.set(this.getReferencedTransform().clone().mulDir(new Vector3(0, 0, 1)));
 		}
 		manipAxis.normalize();
+//		System.out.println("manipAxis: " + manipAxis);
 		
 		//Another vector is perpendicular to this axis and parallel to the view plane. 
 		//A vector is parallel to the view plane if it is perpendicular to its plane's normal, and 
@@ -92,48 +90,43 @@ public class TranslationManipulator extends Manipulator {
 		Vector3 perpToImgNormalC = imgNormalC.clone().cross(manipAxis).normalize();
 		Vector3 perpToImgNormalL = imgNormalL.clone().cross(manipAxis).normalize();
 		
-		System.out.println("img normal C: " + imgNormalC);
-		System.out.println("img normal L: " + imgNormalL);
-		
 		//You can do this by taking two non-parallel vectors within the plane and taking their cross product.
 		Vector3 manipNormalC = manipAxis.clone().cross(perpToImgNormalC).normalize();
 		Vector3 manipNormalL = manipAxis.clone().cross(perpToImgNormalL).normalize();
 		
 		//find the world coordinates of the points where these mouse rays intersect 
 		//the plane defined by the translation manipulator's origin and direction
-		float topC = manipOrigin.clone().sub(curMWorldN).dot(manipNormalC);
-		float tCurr = topC/(curMDir.clone().dot(manipNormalC));
-		float topL = manipOrigin.clone().sub(lastMWorldN).dot(manipNormalL);
-		float tLast = topL/(lastMDir.clone().dot(manipNormalL));
+		double topC = manipOrigin.clone().sub(curMWorldN).dot(manipNormalC);
+		double tCurr = topC/(curMDir.clone().dot(manipNormalC));
+		double topL = manipOrigin.clone().sub(lastMWorldN).dot(manipNormalL);
+		double tLast = topL/(lastMDir.clone().dot(manipNormalL));
 		
 		
-		Vector3 intersectionC = curMWorldN.clone().add(curMDir.clone().mul(tCurr));
-		Vector3 intersectionL = lastMWorldN.clone().add(lastMDir.clone().mul(tLast));
+		Vector3 intersectionC = curMWorldN.clone().add(curMDir.clone().mul((float)tCurr));
+		Vector3 intersectionL = lastMWorldN.clone().add(lastMDir.clone().mul((float)tLast));
 		
 		//Now we need to find the points on the manipulator ray that are closest to these points
-		float t1 = intersectionC.clone().dot(manipAxis);
-		float t2 = intersectionL.clone().dot(manipAxis);
+		double t1 = intersectionC.clone().dot(manipAxis);
+		double t2 = intersectionL.clone().dot(manipAxis);
 		t2 = intersectionC.clone().dot(manipAxis)/(manipAxis.clone().lenSq())/11;
 		t1 = intersectionL.clone().dot(manipAxis)/(manipAxis.clone().lenSq())/11;
-//		System.out.println("t1: " + t1);
-//		System.out.println("t2: " + t2);
-		System.out.println("final t:" + (t2-t1));
-		System.out.println("manipAxis: " + manipAxis);
-		if(Double.isNaN(t2-t1)) return;
+		double diff = t2-t1;
+//		System.out.println("final t:" + (diff));
+		if(Double.isNaN(diff) || diff == 0.0) return;
 		Matrix4 T = new Matrix4();
 		if(this.axis == ManipulatorAxis.X){
-			T = T.createTranslation(new Vector3(t2-t1, 0, 0));
+			T = T.createTranslation(new Vector3((float)diff, 0, 0));
 			this.reference.translation.mulAfter(T);
 		}
 		else if(this.axis == ManipulatorAxis.Y){
-			T = T.createTranslation(new Vector3(0, t2-t1, 0));
+			T = T.createTranslation(new Vector3(0, (float)diff, 0));
 			this.reference.translation.mulAfter(T);
 		}
 		else if(this.axis == ManipulatorAxis.Z){
-			T = T.createTranslation(new Vector3(0, 0, t2-t1));
+			T = T.createTranslation(new Vector3(0, 0, (float)diff));
 			this.reference.translation.mulAfter(T);
 		}		
-		System.out.println(this.reference.translation);
+//		System.out.println(this.reference.translation);
 	
 	}
 

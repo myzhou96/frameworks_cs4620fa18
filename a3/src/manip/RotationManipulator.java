@@ -98,13 +98,13 @@ public class RotationManipulator extends Manipulator {
 		
 		//find the world coordinates of the points where these mouse rays intersect 
 		//the plane defined by the translation manipulator's origin and direction
-		float topC = manipOrigin.clone().sub(curMWorldN).dot(manipNormalC);
-		float tCurr = topC/(curMDir.clone().dot(manipNormalC));
-		float topL = manipOrigin.clone().sub(lastMWorldN).dot(manipNormalL);
-		float tLast = topL/(lastMDir.clone().dot(manipNormalL));
+		double topC = manipOrigin.clone().sub(curMWorldN).dot(manipNormalC);
+		double tCurr = topC/(curMDir.clone().dot(manipNormalC));
+		double topL = manipOrigin.clone().sub(lastMWorldN).dot(manipNormalL);
+		double tLast = topL/(lastMDir.clone().dot(manipNormalL));
 		
-		Vector3 intersectionC = curMWorldN.clone().add(curMDir.clone().mul(tCurr));
-		Vector3 intersectionL = lastMWorldN.clone().add(lastMDir.clone().mul(tLast));
+		Vector3 intersectionC = curMWorldN.clone().add(curMDir.clone().mul((float)tCurr));
+		Vector3 intersectionL = lastMWorldN.clone().add(lastMDir.clone().mul((float)tLast));
 		
 		Vector3 angleVectorC = intersectionC.clone().sub(manipOrigin);//.normalize();
 		Vector3 angleVectorL = intersectionL.clone().sub(manipOrigin);//.normalize();
