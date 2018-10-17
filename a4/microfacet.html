@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Microfacet reflectance TEST TEST</title>
+        <title>Microfacet reflectance</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <style>
@@ -70,10 +70,22 @@
 // attribute vec2 uv;
 
 // TODO#A4: Declare any varyings here.
+varying vec2 vUv;
+varying vec3 vNormal; // normal at the vertex in eye space
+varying vec4 vPosition; // vertex position in eye space
 
 void main() {
     // TODO#A4: Compute gl_Position, as well as any varyings you need in the fragment shader.
-    gl_Position = vec4(1.0); // placeholder
+    // gl_Position = vec4(1.0); // placeholder
+
+    // Calculate point in eye space
+    vPosition = modelViewMatrix * vec4(position, 1.0);
+    // Calculate projected point
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+    // We have to use the inverse transpose of the modelview matrix for the normal
+    vNormal = normalize((normalMatrix * normal).xyz);
+    vUv = uv;
 }
         </script>
 <!-----------------------------------------------------------------------------
@@ -179,7 +191,40 @@ float computeG(vec3 N, vec3 H, vec3 L, vec3 V) {
 
 void main() {
     // TODO#A4: Implement the shading here.
-    gl_FragColor = vec4(1.0); // placeholder
+    gl_FragColor = vec4(1.0); // placeholder 
+    vec3 N = normalize(vNormal); //normal
+    vec3 V = normalize(-vPosition.xyz); //outgoing position
+    vec3 finalColor = vec3(0.0, 0.0, 0.0);
+
+    for (int i = 0; i < NUM_LIGHTS; i++) {
+        //distance from light source to surface
+        float r = length(lightPositions[i] - vPosition.xyz); 
+        //vector towards the light (incoming)
+        vec3 L = normalize(lightPositions[i] - vPosition.xyz); 
+        //w_o + w_i
+        vec3 H = normalize(L + V);
+
+        float F = computeF(L, H);
+        float G = computeG(N, H, L, V);
+        float D = computeD(N, H);
+
+        float BRDF = (F*G*D)/(4.0*length(dot(V, H))*length(dot(L, N)));
+
+        // calculate diffuse term
+        vec3 Idiff = from_sRGB(texture2D(diffuseTexture, vUv).rgb)/M_PI;
+        //* max(dot(N, L), 0.0);
+
+        // calculate specular term
+        //k_s * max(N dot H, 0)^p
+        //vec3 Ispec = vec3(1.0) * pow(max(dot(N, H), 0.0), 1.0 / r);
+
+        //lightColors[i] is I
+        finalColor += (lightColors[i]/(r*r)) * (Idiff + BRDF) * max(dot(N, L), 0.0) ;
+    }
+
+    // Only shade if facing the light
+    // Color the back faces an identifiable color
+    gl_FragColor = vec4(to_sRGB(finalColor * exposure), 1.0);
 }
 
         </script>

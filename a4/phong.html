@@ -114,7 +114,7 @@ void main() {
     for (int i = 0; i < NUM_LIGHTS; i++) {
         float r = length(lightPositions[i] - vPosition.xyz);
         vec3 L = normalize(lightPositions[i] - vPosition.xyz); 
-        vec3 H = normalize(L + V);
+        vec3 H = normalize(L + V); 
 
         // calculate diffuse term
         vec3 Idiff = from_sRGB(texture2D(diffuseTexture, vUv).rgb) * max(dot(N, L), 0.0);
