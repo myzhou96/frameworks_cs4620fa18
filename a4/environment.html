@@ -66,10 +66,18 @@
 // attribute vec2 uv;
 
 // TODO#A4: Declare any varyings here.
+varying vec3 vNormal; // normal at the vertex in eye space
+varying vec4 vPosition; // vertex position in eye space
 
 void main() {
     // TODO#A4: Compute gl_Position, as well as any varyings you need in the fragment shader.
-    gl_Position = vec4(1.0); // placeholder
+    // Calculate point in eye space
+    vPosition = modelViewMatrix * vec4(position, 1.0);
+    // Calculate projected point
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+
+    // We have to use the inverse transpose of the modelview matrix for the normal
+    vNormal = normalize((normalMatrix * normal).xyz);
 }
         </script>
 <!-----------------------------------------------------------------------------
@@ -81,13 +89,17 @@ uniform float exposure; // Multiply the final color by this.
 uniform samplerCube environmentMap; // Use samplerCube to look up into this.
 
 // TODO#A4: Declare any varyings here.
+varying vec4 vPosition;
+varying vec3 vNormal;
 
 vec3 to_sRGB(vec3 c) { return pow(c, vec3(1.0/2.2)); }
 vec3 from_sRGB(vec3 c) { return pow(c, vec3(2.2)); }
 
 void main() {
     // TODO#A4: Implement the mirror reflection here.
-    gl_FragColor = vec4(1.0); // placeholder
+    vec3 vReflected = reflect(vPosition.xyz, vNormal);
+    gl_FragColor = textureCube(environmentMap, vReflected) * exposure;
+
 }
         </script>
 <!-----------------------------------------------------------------------------
