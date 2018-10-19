@@ -76,7 +76,6 @@ varying vec4 vPosition; // vertex position in eye space
 
 void main() {
     // TODO#A4: Compute gl_Position, as well as any varyings you need in the fragment shader.
-    // gl_Position = vec4(1.0); // placeholder
 
     // Calculate point in eye space
     vPosition = modelViewMatrix * vec4(position, 1.0);

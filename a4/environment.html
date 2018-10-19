@@ -71,6 +71,7 @@ varying vec4 vPosition; // vertex position in eye space
 
 void main() {
     // TODO#A4: Compute gl_Position, as well as any varyings you need in the fragment shader.
+
     // Calculate point in eye space
     vPosition = modelViewMatrix * vec4(position, 1.0);
     // Calculate projected point
@@ -99,7 +100,6 @@ void main() {
     // TODO#A4: Implement the mirror reflection here.
     vec3 vReflected = reflect(vPosition.xyz, vNormal);
     gl_FragColor = textureCube(environmentMap, vReflected) * exposure;
-
 }
         </script>
 <!-----------------------------------------------------------------------------

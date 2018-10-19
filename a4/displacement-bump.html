@@ -81,13 +81,33 @@ uniform sampler2D displacementMap;
 uniform float displacementScale; // The displacement height map.
 
 // TODO#A4: Declare any varyings here.
+varying vec2 vUv;
+varying vec3 vNormal; // normal at the vertex in eye space
+varying vec4 vPosition; // vertex position in eye space
 
 void main() {
     // TODO#A4: Compute the displaced vertex position
     // and vertex normal as described in the writeup. 
     // The position should be moved along its normal by 
     // the red channel of displacementMap times displacementScale.
-    gl_Position = vec4(1.0); // placeholder
+
+    // Calculate point in eye space
+    vPosition = modelViewMatrix * vec4(position, 1.0);
+
+    vec3 normalized = normalize(normal);
+    gl_Position = vec4(position, 1.0) + displacementScale * texture2D(displacementMap, uv).x * vec4(normalized, 1.0);
+    vPosition = modelViewMatrix * gl_Position;
+    gl_Position = projectionMatrix * modelViewMatrix * gl_Position;
+    vec2 newUv1 = vec2(uv.x + 0.001, uv.y);
+    vec2 newUv2 = vec2(uv.x - 0.001, uv.y);
+    vec2 newUv3 = vec2(uv.x, uv.y + 0.001);
+    vec2 newUv4 = vec2(uv.x, uv.y - 0.001);
+    vec3 derivHu = (texture2D(displacementMap, newUv1).xyz - texture2D(displacementMap, newUv2).xyz)/(2.0*0.001);
+    vec3 derivHv = (texture2D(displacementMap, newUv3).xyz - texture2D(displacementMap, newUv4).xyz)/(2.0*0.001);
+    vNormal = cross(derivU + displacementScale * derivHu * normalized, derivV + displacementScale * derivHv * normalized);
+    vNormal = normalize((normalMatrix * vNormal).xyz);
+
+    vUv= uv;
 }
         </script>
 <!-----------------------------------------------------------------------------
@@ -104,17 +124,40 @@ uniform float roughness; // For Phong or Cook-Torrance.
 uniform sampler2D diffuseTexture; // The diffuse color. Use texture2D to look up into this.
 
 // TODO#A4: Declare any varyings here.
+varying vec2 vUv;
+varying vec3 vNormal; // fragment normal in eye space
+varying vec4 vPosition; // fragment position in eye space
 
 vec3 to_sRGB(vec3 c) { return pow(c, vec3(1.0/2.2)); }
 vec3 from_sRGB(vec3 c) { return pow(c, vec3(2.2)); }
 
 void main() {
     // TODO#A4: Implement Phong reflectance function here.
-    
+
+    // interpolating normals will change the length of the normal, so renormalize the normal.
+    vec3 N = normalize(vNormal);
+    vec3 V = normalize(-vPosition.xyz);
+
+    vec3 finalColor = vec3(0.0, 0.0, 0.0);
+
+    for (int i = 0; i < NUM_LIGHTS; i++) {
+        float r = length(lightPositions[i] - vPosition.xyz);
+        vec3 L = normalize(lightPositions[i] - vPosition.xyz);
+        vec3 H = normalize(L + V);
+
+        // calculate diffuse term
+        vec3 Idiff = from_sRGB(texture2D(diffuseTexture, vUv).rgb) * max(dot(N, L), 0.0);
+
+        // calculate specular term
+        vec3 Ispec = vec3(1.0) * pow(max(dot(N, H), 0.0), 1.0 / roughness);
+
+        finalColor += lightColors[i] * (Idiff + Ispec) / (r*r);
+    }
+
     // Only shade if facing the light
     // Color the back faces an identifiable color
     if (gl_FrontFacing) {
-        gl_FragColor = vec4(1.0); // placeholder
+        gl_FragColor = vec4(to_sRGB(finalColor * exposure), 1.0);
     } else {
         gl_FragColor = vec4(170.0/255.0, 160.0/255.0, 0.0, 1.0); 
     }
