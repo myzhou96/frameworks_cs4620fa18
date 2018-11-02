@@ -267,9 +267,9 @@ public abstract class SplineCurve {
 	public static void build3DRevolution(SplineCurve crossSection, OBJMesh mesh, float scale, float sliceTolerance) {
 		//TODO A5
 		Matrix3 rotateX90 = new Matrix3(1f, 0f, 0f, 0f, 0f, -1f, 0f, 1f, 0f);
-		ArrayList<Vector3> rotatedPts = new ArrayList<Vector3>();
+		ArrayList<Vector3> rotatedPts = new ArrayList<>();
 
-		//Iterating through all the pts in all the curves, and rotating them to lie in the yz plane
+		//Iterating through all the points in all the curves, and rotating them to lie in the yz plane
 		for(int i = 0; i < crossSection.getPoints().size(); i++){
 			Vector2 pt2 = crossSection.getPoints().get(i);
 			Vector3 pt3 = new Vector3(pt2.x, pt2.y, 0f);
@@ -300,12 +300,12 @@ public abstract class SplineCurve {
 		
 		mesh.positions.addAll(rotatedZPts);
 		mesh.normals.addAll(rotatedZPts);
-		
+
 		for(int i = 0; i < rotatedPts.size(); i++){ //vertical
 			int top = i * numSlices;
             int bottom = (top + numSlices) % (rotatedPts.size() * numSlices);
 			for(int j = 0; j < numSlices; j++){ //horizontal
-				OBJFace bottomTri = new OBJFace(3, true, true);
+				OBJFace bottomTri = new OBJFace(3, false, true);
                 bottomTri.positions[0] = top + j;
                 bottomTri.positions[2] = bottom + j;
                 bottomTri.positions[1] = bottom + ((1+j)%numSlices);
