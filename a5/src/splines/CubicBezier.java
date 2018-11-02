@@ -89,7 +89,7 @@ public class CubicBezier {
 			Vector2 tangent = p21.clone().sub(p30).normalize();
     		this.curveTangents.add(tangent);
     		Vector2 norm = new Vector2(tangent.y, -tangent.x);
-    		this.curveNormals.add(norm);
+    		this.curveNormals.add(norm.normalize());
 
 //        	CubicBezier c1 = new CubicBezier(this.p0, p10, p20, p30, this.epsilon);
 //        	CubicBezier c2 = new CubicBezier(p30, p21, p12, this.p3, this.epsilon);

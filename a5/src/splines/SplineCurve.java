@@ -287,16 +287,16 @@ public abstract class SplineCurve {
 		int numSlices = d.intValue();
 		float inc = 2*(float)Math.PI/numSlices;
 
-		for(int i = 0; i < rotatedPts.size(); i++){
-			for(int j = 0; j < numSlices; j++){
-				float rad = j*inc;
+		for(int i = 0; i < numSlices; i++){
+			for(int j = 0; j < rotatedPts.size(); j++){
+				float rad = i*inc;
 				Matrix3 rotateZ = new Matrix3(
 						(float) Math.cos((double) rad), (float) -Math.sin((double) rad), 0f, 
 						(float) Math.sin((double) rad), (float) Math.cos((double) rad), 0f, 
 						0f, 0f, 1f);
-				Vector3 p = rotatedPts.get(i);
+				Vector3 p = rotatedPts.get(j);
 				Vector3 rotatedP = rotateZ.clone().mul(p.clone());
-				Vector3 n = rotatedNorms.get(i);
+				Vector3 n = rotatedNorms.get(j);
 				Vector3 rotatedN = rotateZ.clone().mul(n.clone());
 				rotatedZPts.add(rotatedP);
 				rotatedZNorms.add(rotatedN);
