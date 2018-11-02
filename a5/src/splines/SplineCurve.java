@@ -269,39 +269,89 @@ public abstract class SplineCurve {
 		Matrix3 rotateX90 = new Matrix3(1f, 0f, 0f, 0f, 0f, -1f, 0f, 1f, 0f);
 		ArrayList<Vector3> rotatedPts = new ArrayList<Vector3>();
 		
+		System.out.println(crossSection.getPoints().size());
 		//Iterating through all the pts in all the curves, and rotating them to lie in the yz plane
-		for(int i = 0; i < crossSection.bezierCurves.size(); i++){
-			CubicBezier c = crossSection.bezierCurves.get(i);
-			ArrayList<Vector2> pts = c.getPoints();
-			for(int j = 0; j < pts.size(); j++){
-				Vector3 p = new Vector3(pts.get(i).x, pts.get(i).y, 0f);
-				rotateX90.clone().mul(p);
-				rotatedPts.add(p);	
-			}
+		for(int i = 0; i < crossSection.getPoints().size(); i++){
+			Vector2 pt2 = crossSection.getPoints().get(i);
+			Vector3 pt3 = new Vector3(pt2.x, pt2.y, 0f);
+			rotatedPts.add(rotateX90.clone().mul(pt3));
 		}
-		System.out.println(crossSection.bezierCurves.get(0).getPoints().toString());
+		
+//		System.out.println(crossSection.bezierCurves.get(0).getPoints().toString());
 		ArrayList<Vector3> rotatedZPts = new ArrayList<Vector3>(); //List of points that will store all vertices
 		Double d = (2*Math.PI/sliceTolerance);
 		int numSlices = d.intValue();
 		System.out.println(numSlices);
-		System.out.println(rotatedPts.size());
 		float inc = 2*(float)Math.PI/numSlices;
-		//Rotating curve around z-axis
-		for(int i = 0; i < numSlices; i++){
-			float rad = i*inc;
-			Matrix3 rotateZ = new Matrix3(
-					(float) Math.cos((double) rad), (float) -Math.sin((double) rad), 0f, 
-					(float) Math.sin((double) rad), (float) Math.cos((double) rad), 0f, 
-					0f, 0f, 1f);
-			for(int j = 0; j < rotatedPts.size(); j++){
-				Vector3 p = rotatedPts.get(j);
-				rotateZ.clone().mul(p);
-				rotatedZPts.add(p);
+
+		for(int i = 0; i < rotatedPts.size(); i++){
+			for(int j = 0; j < numSlices; j++){
+				float rad = j*inc;
+				Matrix3 rotateZ = new Matrix3(
+						(float) Math.cos((double) rad), (float) -Math.sin((double) rad), 0f, 
+						(float) Math.sin((double) rad), (float) Math.cos((double) rad), 0f, 
+						0f, 0f, 1f);
+				Vector3 p = rotatedPts.get(i);
+				rotatedZPts.add(rotateZ.clone().mul(p));
 			}
 		}
-		System.out.println(rotatedZPts.get(0));
-		System.out.println(rotatedZPts.get(1));
-		System.out.println(rotatedZPts.get(2));
+		
+		mesh.positions.addAll(rotatedZPts);
+		System.out.println(rotatedPts.get(0).toString());
+		System.out.println(rotatedPts.get(1).toString());
+		System.out.println(rotatedPts.get(2).toString());
+		System.out.println("MESH");
+		System.out.println(mesh.positions.get(0).toString());
+		System.out.println(mesh.positions.get(1).toString());
+		System.out.println(mesh.positions.get(2).toString());
+		System.out.println(mesh.positions.get(3).toString());
+		System.out.println(mesh.positions.get(4).toString());
+		System.out.println(mesh.positions.get(20).toString());
+		mesh.normals.addAll(rotatedZPts);
+		
+		for(int i = 0; i < rotatedPts.size()-2; i++){ //vertical
+			int top = (i*numSlices) + 1;
+            int bottom = top + numSlices;
+			for(int j = 0; j < numSlices; j++){ //horizontal
+				OBJFace bottomTri = new OBJFace(3, true, true);
+                bottomTri.positions[0] = top + j;
+                bottomTri.positions[1] = bottom + j;
+                bottomTri.positions[2] = bottom + ((1+j)%numSlices);
+//                bottomTri.normals = bottomTri.positions;
+                
+                OBJFace topTri = new OBJFace(3, true, true);
+                topTri.positions[0] = bottom + ((1+j)%numSlices);
+                topTri.positions[1] = top + ((1+j)%numSlices);
+                topTri.positions[2] = top + j;
+//                topTri.normals = topTri.positions;
+                
+                mesh.faces.add(bottomTri);
+                mesh.faces.add(topTri);             
+			}
+		}
+		System.out.println(mesh.faces.get(0).positions[0]);
+		System.out.println(mesh.faces.get(0).positions[1]);
+		System.out.println(mesh.faces.get(0).positions[2]);
+		System.out.println(mesh.faces.get(1).positions[0]);
+		System.out.println(mesh.faces.get(1).positions[1]);
+		System.out.println(mesh.faces.get(1).positions[2]);
+		
+//		//Rotating curve around z-axis
+//		for(int i = 0; i < numSlices; i++){
+//			float rad = i*inc;
+//			Matrix3 rotateZ = new Matrix3(
+//					(float) Math.cos((double) rad), (float) -Math.sin((double) rad), 0f, 
+//					(float) Math.sin((double) rad), (float) Math.cos((double) rad), 0f, 
+//					0f, 0f, 1f);
+//			for(int j = 0; j < rotatedPts.size(); j++){
+//				Vector3 p = rotatedPts.get(j);
+//				rotateZ.clone().mul(p);
+//				rotatedZPts.add(p);
+//			}
+//		}
+//		System.out.println(rotatedZPts.get(0));
+//		System.out.println(rotatedZPts.get(1));
+//		System.out.println(rotatedZPts.get(2));
 		
 		
 	}
