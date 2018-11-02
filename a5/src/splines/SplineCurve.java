@@ -6,6 +6,7 @@ import mesh.OBJMesh;
 import mesh.OBJMesh_Archive;
 import egl.NativeMem;
 import egl.math.Matrix4;
+import egl.math.Matrix3;
 import egl.math.Vector2;
 import egl.math.Vector3;
 import egl.math.Vector3i;
@@ -265,6 +266,42 @@ public abstract class SplineCurve {
 	 */
 	public static void build3DRevolution(SplineCurve crossSection, OBJMesh mesh, float scale, float sliceTolerance) {
 		//TODO A5
+		Matrix3 rotateX90 = new Matrix3(1f, 0f, 0f, 0f, 0f, -1f, 0f, 1f, 0f);
+		ArrayList<Vector3> rotatedPts = new ArrayList<Vector3>();
+		
+		//Iterating through all the pts in all the curves, and rotating them to lie in the yz plane
+		for(int i = 0; i < crossSection.bezierCurves.size(); i++){
+			CubicBezier c = crossSection.bezierCurves.get(i);
+			ArrayList<Vector2> pts = c.getPoints();
+			for(int j = 0; j < pts.size(); j++){
+				Vector3 p = new Vector3(pts.get(i).x, pts.get(i).y, 0f);
+				rotateX90.clone().mul(p);
+				rotatedPts.add(p);	
+			}
+		}
+		System.out.println(crossSection.bezierCurves.get(0).getPoints().toString());
+		ArrayList<Vector3> rotatedZPts = new ArrayList<Vector3>(); //List of points that will store all vertices
+		Double d = (2*Math.PI/sliceTolerance);
+		int numSlices = d.intValue();
+		System.out.println(numSlices);
+		System.out.println(rotatedPts.size());
+		float inc = 2*(float)Math.PI/numSlices;
+		//Rotating curve around z-axis
+		for(int i = 0; i < numSlices; i++){
+			float rad = i*inc;
+			Matrix3 rotateZ = new Matrix3(
+					(float) Math.cos((double) rad), (float) -Math.sin((double) rad), 0f, 
+					(float) Math.sin((double) rad), (float) Math.cos((double) rad), 0f, 
+					0f, 0f, 1f);
+			for(int j = 0; j < rotatedPts.size(); j++){
+				Vector3 p = rotatedPts.get(j);
+				rotateZ.clone().mul(p);
+				rotatedZPts.add(p);
+			}
+		}
+		System.out.println(rotatedZPts.get(0));
+		System.out.println(rotatedZPts.get(1));
+		System.out.println(rotatedZPts.get(2));
 		
 		
 	}
