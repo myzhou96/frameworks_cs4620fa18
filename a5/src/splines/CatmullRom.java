@@ -16,8 +16,7 @@ public class CatmullRom extends SplineCurve {
 	}
 
 	@Override
-	public CubicBezier toBezier(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3,
-			float eps) {
+	public CubicBezier toBezier(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float eps) {
 		//TODO A5
 		Matrix4 convertToBez = new Matrix4(
 				0f, 1f, 0f, 0f,
