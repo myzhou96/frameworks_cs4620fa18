@@ -234,7 +234,7 @@ public abstract class SplineCurve {
 	 */
 	public static void build3DRevolution(SplineCurve crossSection, OBJMesh mesh, float scale, float sliceTolerance) {
 		//TODO A5
-		float angle = 0f;
+		
 	}
 }
 
