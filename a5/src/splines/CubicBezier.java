@@ -66,8 +66,7 @@ public class CubicBezier {
     	Vector2 theta23 = this.p3.clone().sub(this.p2);
     	float angle012 = theta01.angle(theta12);
     	float angle123 = theta12.angle(theta23);
-    	
-    	if(angle012 > this.epsilon || angle123 > this.epsilon || depth >= this.maxDepth){
+    	if(depth < this.maxDepth && (angle012 > this.epsilon || angle123 > this.epsilon)){
         	Vector2 p10 = this.p0.clone().mul(0.5f).add(this.p1.clone().mul(0.5f));
         	Vector2 p11 = this.p1.clone().mul(0.5f).add(this.p2.clone().mul(0.5f));
         	Vector2 p12 = this.p2.clone().mul(0.5f).add(this.p3.clone().mul(0.5f));

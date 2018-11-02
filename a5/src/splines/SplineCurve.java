@@ -182,9 +182,40 @@ public abstract class SplineCurve {
 	 * add to bezierCurves is the order in which the overall Spline is chained together.
 	 * If the spline is closed, include additional CubicBeziers to account for this.
 	 */
+	
+	/**
+	 * The setBeziers() method in SplineCurve.java constructs an ArrayList of Béziers, bezierCurves, 
+	 * that make up the SplineCurve. The spline editor hands you a list of control points, numbered from 0 to N-1, 
+	 * which are provided in the ArrayList controlPoints. These control points define a chain of curves that we'll 
+	 * want to draw. Finding which four control points influence a segment of the Catmull-Rom Spline is mostly 
+	 * simple: segment i of the curve is influenced by control points i-1, i, i+1, and i+2. Using this definition 
+	 * we can generate N-3 Bézier segments from the N control points without falling off the ends of the sequence, 
+	 * which is exactly what we'd like to do in the case of an open curve. However, you may have noticed a 
+	 * boolean called isClosed in your SplineCurve. To handle closed splines, you'll need to tack on a few 
+	 * additional Bézier curves. We'll let you figure out exactly how to handle this, but know that you'll 
+	 * need to "wrap around" to the start of your control point list.
+	 */
 	private void setBeziers() {
 		//TODO A5
+		this.bezierCurves = new ArrayList<CubicBezier>();
 		
+		for(int i = 1; i < this.controlPoints.size()-2; i++){
+			CubicBezier curve = toBezier(this.controlPoints.get(i-1), this.controlPoints.get(i),
+					this.controlPoints.get(i+1), this.controlPoints.get(i+2), this.epsilon);
+			this.bezierCurves.add(curve);
+		}
+		if (isClosed){
+			int n = this.controlPoints.size();
+			CubicBezier curve1 = toBezier(this.controlPoints.get(n-1), this.controlPoints.get(0),
+					this.controlPoints.get(1), this.controlPoints.get(2), this.epsilon);
+			CubicBezier curve2 = toBezier(this.controlPoints.get(n-2), this.controlPoints.get(n-1),
+					this.controlPoints.get(0), this.controlPoints.get(1), this.epsilon);
+			CubicBezier curve3 = toBezier(this.controlPoints.get(n-3), this.controlPoints.get(n-2),
+					this.controlPoints.get(n-1), this.controlPoints.get(0), this.epsilon);
+			this.bezierCurves.add(curve3);
+			this.bezierCurves.add(curve2);
+			this.bezierCurves.add(curve1);
+		}
 	}
 	
 	/**
@@ -234,6 +265,7 @@ public abstract class SplineCurve {
 	 */
 	public static void build3DRevolution(SplineCurve crossSection, OBJMesh mesh, float scale, float sliceTolerance) {
 		//TODO A5
+		
 		
 	}
 }
