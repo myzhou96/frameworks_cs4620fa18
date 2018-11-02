@@ -270,7 +270,6 @@ public abstract class SplineCurve {
 		ArrayList<Vector3> rotatedPts = new ArrayList<Vector3>();
 		ArrayList<Vector3> rotatedNorms = new ArrayList<Vector3>();
 		
-		System.out.println(crossSection.getPoints().size());
 		//Iterating through all the pts in all the curves, and rotating them to lie in the yz plane
 		for(int i = 0; i < crossSection.getPoints().size(); i++){
 			Vector2 pt2 = crossSection.getPoints().get(i);
@@ -305,65 +304,40 @@ public abstract class SplineCurve {
 		}
 		
 		mesh.positions.addAll(rotatedZPts);
-//		System.out.println(crossSection.getPoints().get(0).toString());
-		System.out.println(rotatedPts.get(0).toString());
-//		System.out.println(rotatedPts.get(1).toString());
-//		System.out.println(rotatedPts.get(2).toString());
-		System.out.println("MESH");
-		System.out.println(mesh.positions.get(0).toString());
-		System.out.println(mesh.positions.get(1).toString());
-		System.out.println(mesh.positions.get(2).toString());
-		System.out.println(mesh.positions.get(3).toString());
-		System.out.println(mesh.positions.get(4).toString());
-		System.out.println(mesh.positions.get(80).toString());
-		System.out.println(mesh.positions.get(81).toString());
-		mesh.normals.addAll(rotatedZPts);
-		
+		System.out.println(mesh.positions.get(0));
+		System.out.println(mesh.positions.get(1));
+		System.out.println(mesh.positions.get(39));
+		System.out.println(mesh.positions.get(40));
+		System.out.println(mesh.positions.get(79));
+		System.out.println(mesh.positions.get(80));
+		mesh.normals.addAll(rotatedZNorms);
+//		rotatedPts.size()-2
 		for(int i = 0; i < rotatedPts.size()-2; i++){ //vertical
 			int top = (i*numSlices);
             int bottom = top + numSlices;
 			for(int j = 0; j < numSlices; j++){ //horizontal
-				OBJFace bottomTri = new OBJFace(3, true, true);
+				OBJFace bottomTri = new OBJFace(3, false, true);
                 bottomTri.positions[0] = top + j;
-                bottomTri.positions[1] = bottom + j;
-                bottomTri.positions[2] = bottom + ((1+j)%numSlices);
+                bottomTri.positions[2] = bottom + j;
+                bottomTri.positions[1] = bottom + ((1+j)%numSlices);
                 bottomTri.normals = bottomTri.positions;
                 
-                OBJFace topTri = new OBJFace(3, true, true);
+                OBJFace topTri = new OBJFace(3, false, true);
                 topTri.positions[0] = bottom + ((1+j)%numSlices);
-                topTri.positions[1] = top + ((1+j)%numSlices);
-                topTri.positions[2] = top + j;
+                topTri.positions[2] = top + ((1+j)%numSlices);
+                topTri.positions[1] = top + j;
                 topTri.normals = topTri.positions;
                 
                 mesh.faces.add(bottomTri);
                 mesh.faces.add(topTri);             
 			}
-		}
+		}		
 		System.out.println(mesh.faces.get(0).positions[0]);
 		System.out.println(mesh.faces.get(0).positions[1]);
 		System.out.println(mesh.faces.get(0).positions[2]);
 		System.out.println(mesh.faces.get(1).positions[0]);
 		System.out.println(mesh.faces.get(1).positions[1]);
 		System.out.println(mesh.faces.get(1).positions[2]);
-		
-//		//Rotating curve around z-axis
-//		for(int i = 0; i < numSlices; i++){
-//			float rad = i*inc;
-//			Matrix3 rotateZ = new Matrix3(
-//					(float) Math.cos((double) rad), (float) -Math.sin((double) rad), 0f, 
-//					(float) Math.sin((double) rad), (float) Math.cos((double) rad), 0f, 
-//					0f, 0f, 1f);
-//			for(int j = 0; j < rotatedPts.size(); j++){
-//				Vector3 p = rotatedPts.get(j);
-//				rotateZ.clone().mul(p);
-//				rotatedZPts.add(p);
-//			}
-//		}
-//		System.out.println(rotatedZPts.get(0));
-//		System.out.println(rotatedZPts.get(1));
-//		System.out.println(rotatedZPts.get(2));
-		
-		
 	}
 }
 
