@@ -130,18 +130,15 @@ public class AnimTimeline {
 		nextTransformation = new Matrix3(next.transformation);
 		System.out.println("prev #: " + prev.frame + " next #: " + next.frame);
 		
-		Matrix3 prevR = new Matrix3();
 		Matrix3 prevS = new Matrix3();
 		Vector3 prevT = prev.transformation.getTrans();
-		Matrix3 nextR = new Matrix3();
 		Matrix3 nextS = new Matrix3();
 		Vector3 nextT = next.transformation.getTrans();
+		Matrix3 prevR = new Matrix3();
+		Matrix3 nextR = new Matrix3();
 		
 		prevTransformation.polar_decomp(prevR, prevS);
 		nextTransformation.polar_decomp(nextR, nextS);
-		
-		Vector3 prevEuler = eulerDecomp(prevR);
-		Vector3 nextEuler = eulerDecomp(nextR);
 		
 		float t;
 		if (prev.frame == next.frame){
@@ -150,24 +147,44 @@ public class AnimTimeline {
 		else{
 			 t = ((float)curFrame - prev.frame)/(next.frame - prev.frame);
 		}
-		
 		System.out.println("value of t: " + t);
 		
 		Matrix3 curS = prevS.interpolate(prevS, nextS, t);
 		Vector3 curT = nextT.clone().sub(prevT.clone()).mul(t).add(prevT.clone());
-		Vector3 curEuler = nextEuler.clone().sub(prevEuler.clone()).mul(t).add(prevEuler.clone());
 		
-		//converting the resulting angles back to a rotation matrix.
-		Matrix3 curR = Matrix3.createRotationZ(curEuler.z)
-				.mulAfter(Matrix3.createRotationY(curEuler.y))
-				.mulAfter(Matrix3.createRotationX(curEuler.x));
+		Matrix3 curR = new Matrix3();
+		if (rotation == 0){
+			Vector3 prevEuler = eulerDecomp(prevR);
+			Vector3 nextEuler = eulerDecomp(nextR);
+			
+			Vector3 curEuler = nextEuler.clone().sub(prevEuler.clone()).mul(t).add(prevEuler.clone());
+			
+			//converting the resulting angles back to a rotation matrix.
+			curR = Matrix3.createRotationZ(curEuler.z)
+					.mulAfter(Matrix3.createRotationY(curEuler.y))
+					.mulAfter(Matrix3.createRotationX(curEuler.x));
+		}
+		else if (rotation == 1){
+			Quat q1 = new Quat(prevR);
+			Quat q2 = new Quat(nextR);
+			Quat q = q1.clone().scale((1f-t)).add(q2.clone().scale(t));
+			q.normalize();
+			q.toRotationMatrix(curR);
+		}
+		else{
+			Quat q1 = new Quat(prevR);
+			Quat q2 = new Quat(nextR);
+			
+			Quat q = q1.slerp(q1, q2, t);
+			q.normalize();
+			q.toRotationMatrix(curR);
+		}
 		
 		//Recompose the constituents to give a transformation for the current frame.
 		Matrix4 temp = new Matrix4(curS.clone().mulBefore(curR));
 		temp.m[12] = curT.x;
 		temp.m[13] = curT.y;
 		temp.m[14] = curT.z;
-//		f.transformation.set(temp);
 		object.transformation.set(temp);
 		System.out.println("final matrix:");
 		System.out.println(temp);
