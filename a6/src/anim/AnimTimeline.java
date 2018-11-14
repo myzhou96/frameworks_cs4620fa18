@@ -32,7 +32,7 @@ public class AnimTimeline {
 	/**
 	 * Create a new timeline for an object.  The new timeline initially has the object
 	 * stationary, with the same transformation it currently has at all times.  This is
-	 * achieve by createing a timeline with a single keyframe at time zero.
+	 * achieve by creating a timeline with a single keyframe at time zero.
 	 * @param o Object
 	 */
 	public AnimTimeline(SceneObject o) {
