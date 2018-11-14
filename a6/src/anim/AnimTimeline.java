@@ -7,6 +7,7 @@ import egl.math.Matrix3;
 import egl.math.Matrix4;
 import egl.math.Quat;
 import egl.math.Vector3;
+import egl.math.Vector4;
 
 /**
  * A timeline for a particular object in the scene.  The timeline holds
@@ -50,8 +51,14 @@ public class AnimTimeline {
 	 */
 	public void addKeyFrame(int frame, Matrix4 t) {
 		// TODO#A6: Add an AnimKeyframe to frames and set its transformation
-		
+		System.out.println("ADDED #" + frame);
+		System.out.println("size " + frames.size());
+		AnimKeyframe f = new AnimKeyframe(frame);
+		object.transformation.set(t);
+		f.transformation.set(t);
+		frames.add(f);	
 	}
+	
 	/**
 	 * Remove a keyframe from the timeline.  If the timeline is empty,
 	 * maintain the invariant by adding a single keyframe with the given
@@ -62,7 +69,13 @@ public class AnimTimeline {
 	public void removeKeyFrame(int frame, Matrix4 t) {
 		// TODO#A6: Delete a frame, you might want to use Treeset.remove
 		// If there is no frame after deletion, add back this frame.
-		
+		frames.remove(frame);
+		if(frames.size() <= 0){
+			AnimKeyframe f = new AnimKeyframe(frame);
+			frames.add(f);
+			object.transformation.set(t);
+			f.transformation.set(t);
+		}
 	}
 
 	
@@ -99,6 +112,65 @@ public class AnimTimeline {
 		// 1 - Linear interpolation of quaternions,
 		// 2 - Spherical linear interpolation of quaternions.
 		
+		System.out.println("UPDATING");
+		System.out.println(curFrame);
+		AnimKeyframe f = new AnimKeyframe(curFrame);
+		AnimKeyframe prev = frames.floor(f);
+		AnimKeyframe next = frames.ceiling(f);
+		
+		Matrix3 prevTran;
+		Matrix3 nextTran;
+		if (prev == null){
+			prev = next;
+		}
+		else if(next == null){
+			next = prev;
+		}
+		prevTran = new Matrix3(prev.transformation);
+		nextTran = new Matrix3(next.transformation);
+		System.out.println("prev #: " + prev.frame + " next #: " + next.frame);
+		
+		Matrix3 prevR = new Matrix3();
+		Matrix3 prevS = new Matrix3();
+		Vector3 prevT = prev.transformation.getTrans();
+		Matrix3 nextR = new Matrix3();
+		Matrix3 nextS = new Matrix3();
+		Vector3 nextT = next.transformation.getTrans();
+		System.out.println("prev trans: " + prevT);
+		System.out.println("next trans: " + nextT);
+		
+		prevTran.polar_decomp(prevR, prevS);
+		nextTran.polar_decomp(nextR, nextS);
+		
+		Vector3 prevEuler = eulerDecomp(prevR);
+		Vector3 nextEuler = eulerDecomp(nextR);
+		
+		float t;
+		if (prev.frame == next.frame){
+			t = 1f;
+		}
+		else{
+			 t = (curFrame - prev.frame)/(prev.frame + next.frame);
+		}
+		
+		System.out.println("value of t: " + t);
+		
+		Matrix3 curS = prevS.createScale(t).add(nextS.createScale(1-t));
+		Vector3 curT = prevT.mul(t).add(nextT.mul(1-t));
+		Vector3 curEuler = prevEuler.mul(t).add(nextEuler.mul(1-t));
+		
+		//converting the resulting angles back to a rotation matrix.
+		Matrix3 curR = Matrix3.createRotationX(curEuler.z)
+				.mulAfter(Matrix3.createRotationX(curEuler.y))
+				.mulAfter(Matrix3.createRotationX(curEuler.x));
+		
+		//Recompose the constituents to give a transformation for the current frame.
+		Matrix4 temp = new Matrix4(curS.clone().mulBefore(curR));
+		temp.m[12] = curT.x;
+		temp.m[13] = curT.y;
+		temp.m[14] = curT.z;
+		f.transformation.set(temp);
+		System.out.println("final matrix:" + temp);
 		
 	}
 }

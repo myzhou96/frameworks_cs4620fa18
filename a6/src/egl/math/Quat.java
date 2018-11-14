@@ -594,24 +594,43 @@ public class Quat extends AbstractList<Float> implements Cloneable {
 	public static void main(String[] args) {
 		Quat qAA = createRotationX(0.4f);
 		Vector4 aa = qAA.toAxisAngle(new Vector4());
-		System.out.println(aa);
+//		System.out.println(aa);
 		
 		Quat q = createRotationX(Util.PIf / 2);
 		Matrix3 r = q.toRotationMatrix(new Matrix3());
 		Vector3 v = new Vector3(0, 0, -1);
 
-		System.out.println(r);
-		System.out.println(Matrix3.createRotationX(Util.PIf / 2));
+//		System.out.println(r);
+//		System.out.println(Matrix3.createRotationX(Util.PIf / 2));
 
+//		
+//		Quat q2 = new Quat(q).conjugate().mul(q);
+//		System.out.println(q2.mul(v.clone()));
+//
+//		System.out.println(q.mul(v.clone()));
+//		System.out.println(new Quat(r).mul(v.clone()));
+//		System.out.println(r.mul(v.clone()));
+//		System.out.println(q);
+//		System.out.println(new Quat(r));
 		
-		Quat q2 = new Quat(q).conjugate().mul(q);
-		System.out.println(q2.mul(v.clone()));
-
-		System.out.println(q.mul(v.clone()));
-		System.out.println(new Quat(r).mul(v.clone()));
-		System.out.println(r.mul(v.clone()));
-		System.out.println(q);
-		System.out.println(new Quat(r));
+		Quat y = createRotationY(Util.PIf);
+//		System.out.println(y);
+		Quat q1 = new Quat(1, 0 , 0, 0);
+		Quat q2 = new Quat(0, 0, 1, 0);
+		Vector4 a2 = q2.toAxisAngle(new Vector4());
+//		System.out.println(a2);
+		Quat q3 = slerp(q1, q2, (1/6.0f));
+		Matrix3 r3 = q3.toRotationMatrix(new Matrix3());
+		System.out.println(r3);
+		Vector4 a3 = q3.toAxisAngle(new Vector4());
+//		System.out.println(a3);
+		r3.mulAfter(r3.clone().mulAfter(r3.clone().mulAfter(r3.clone()).mulAfter(r3.clone()).mulAfter(r3.clone())));
+		//.mulAfter(r3.clone()).mulAfter(r3.clone())
+		//.mulAfter(r3.clone()).mulAfter(r3.clone()).mulAfter(r3.clone()).mulAfter(r3.clone());
+		System.out.println("After 6");
+		System.out.println(r3);
+		System.out.println("q2");
+		System.out.println(q2.toRotationMatrix(new Matrix3()));
 	}
 }
 

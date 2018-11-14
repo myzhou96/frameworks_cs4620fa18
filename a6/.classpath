@@ -16,7 +16,7 @@
 	<classpathentry kind="lib" path="deps/lib/lwjgl-debug.jar"/>
 	<classpathentry kind="lib" path="deps/lib/lwjgl.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/mandy/Github/cs4620sp18/code/student/a6/deps/native/macosx"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/user/Documents/CS4620/frameworks_cs4620fa18/a6/deps/native/macosx"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/lzma.jar"/>
