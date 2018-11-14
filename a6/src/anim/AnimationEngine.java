@@ -179,6 +179,7 @@ public class AnimationEngine {
 	 */
 	
 	public void updateTransformations() {
+		System.out.println("UPDATE ALL");
 		int rotation = 0;
 		switch(this.rotationMode) {
 		case EULER:
@@ -194,7 +195,7 @@ public class AnimationEngine {
 			break;
 		}
 	    for(AnimTimeline tl : timelines.values()) {
-	    		tl.updateTransformation(curFrame, rotation);
+	    	tl.updateTransformation(curFrame, rotation);
 	        scene.sendEvent(new SceneTransformationEvent(tl.object));
 	    }
 		

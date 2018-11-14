@@ -63,8 +63,8 @@ public class CameraController {
 //		if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) { rotation.add(0, -1, 0); }
 //		if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)) { rotation.add(0, 1, 0); }
 //		
-//		if(Keyboard.isKeyDown(Keyboard.KEY_O)) { orbitMode = true; } 
-//		if(Keyboard.isKeyDown(Keyboard.KEY_F)) { orbitMode = false; } 
+		if(Keyboard.isKeyDown(Keyboard.KEY_O)) { orbitMode = true; } 
+		if(Keyboard.isKeyDown(Keyboard.KEY_F)) { orbitMode = false; } 
 		
 		// camera mouse control
 		int frame = -1;

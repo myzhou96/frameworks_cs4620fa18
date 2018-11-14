@@ -53,9 +53,10 @@ public class AnimTimeline {
 		// TODO#A6: Add an AnimKeyframe to frames and set its transformation
 		System.out.println("ADDED #" + frame);
 		System.out.println("size " + frames.size());
+//		object.transformation.set(t);
 		AnimKeyframe f = new AnimKeyframe(frame);
-		object.transformation.set(t);
 		f.transformation.set(t);
+		System.out.println(t);
 		frames.add(f);	
 	}
 	
@@ -69,11 +70,10 @@ public class AnimTimeline {
 	public void removeKeyFrame(int frame, Matrix4 t) {
 		// TODO#A6: Delete a frame, you might want to use Treeset.remove
 		// If there is no frame after deletion, add back this frame.
-		frames.remove(frame);
+		AnimKeyframe f = new AnimKeyframe(frame);
+		frames.remove(f);
 		if(frames.size() <= 0){
-			AnimKeyframe f = new AnimKeyframe(frame);
 			frames.add(f);
-			object.transformation.set(t);
 			f.transformation.set(t);
 		}
 	}
@@ -118,16 +118,16 @@ public class AnimTimeline {
 		AnimKeyframe prev = frames.floor(f);
 		AnimKeyframe next = frames.ceiling(f);
 		
-		Matrix3 prevTran;
-		Matrix3 nextTran;
+		Matrix3 prevTransformation;
+		Matrix3 nextTransformation;
 		if (prev == null){
 			prev = next;
 		}
 		else if(next == null){
 			next = prev;
 		}
-		prevTran = new Matrix3(prev.transformation);
-		nextTran = new Matrix3(next.transformation);
+		prevTransformation = new Matrix3(prev.transformation);
+		nextTransformation = new Matrix3(next.transformation);
 		System.out.println("prev #: " + prev.frame + " next #: " + next.frame);
 		
 		Matrix3 prevR = new Matrix3();
@@ -136,11 +136,9 @@ public class AnimTimeline {
 		Matrix3 nextR = new Matrix3();
 		Matrix3 nextS = new Matrix3();
 		Vector3 nextT = next.transformation.getTrans();
-		System.out.println("prev trans: " + prevT);
-		System.out.println("next trans: " + nextT);
 		
-		prevTran.polar_decomp(prevR, prevS);
-		nextTran.polar_decomp(nextR, nextS);
+		prevTransformation.polar_decomp(prevR, prevS);
+		nextTransformation.polar_decomp(nextR, nextS);
 		
 		Vector3 prevEuler = eulerDecomp(prevR);
 		Vector3 nextEuler = eulerDecomp(nextR);
@@ -150,18 +148,18 @@ public class AnimTimeline {
 			t = 1f;
 		}
 		else{
-			 t = (curFrame - prev.frame)/(prev.frame + next.frame);
+			 t = ((float)curFrame - prev.frame)/(next.frame - prev.frame);
 		}
 		
 		System.out.println("value of t: " + t);
 		
-		Matrix3 curS = prevS.createScale(t).add(nextS.createScale(1-t));
-		Vector3 curT = prevT.mul(t).add(nextT.mul(1-t));
-		Vector3 curEuler = prevEuler.mul(t).add(nextEuler.mul(1-t));
+		Matrix3 curS = prevS.interpolate(prevS, nextS, t);
+		Vector3 curT = nextT.clone().sub(prevT.clone()).mul(t).add(prevT.clone());
+		Vector3 curEuler = nextEuler.clone().sub(prevEuler.clone()).mul(t).add(prevEuler.clone());
 		
 		//converting the resulting angles back to a rotation matrix.
-		Matrix3 curR = Matrix3.createRotationX(curEuler.z)
-				.mulAfter(Matrix3.createRotationX(curEuler.y))
+		Matrix3 curR = Matrix3.createRotationZ(curEuler.z)
+				.mulAfter(Matrix3.createRotationY(curEuler.y))
 				.mulAfter(Matrix3.createRotationX(curEuler.x));
 		
 		//Recompose the constituents to give a transformation for the current frame.
@@ -169,8 +167,11 @@ public class AnimTimeline {
 		temp.m[12] = curT.x;
 		temp.m[13] = curT.y;
 		temp.m[14] = curT.z;
-		f.transformation.set(temp);
-		System.out.println("final matrix:" + temp);
+//		f.transformation.set(temp);
+		object.transformation.set(temp);
+		System.out.println("final matrix:");
+		System.out.println(temp);
+		
 		
 	}
 }
