@@ -149,7 +149,7 @@ public class AnimTimeline {
 		}
 		System.out.println("value of t: " + t);
 		
-		Matrix3 curS = prevS.interpolate(prevS, nextS, t);
+		Matrix3 curS = prevS.interpolate(prevS.clone(), nextS.clone(), t);
 		Vector3 curT = nextT.clone().sub(prevT.clone()).mul(t).add(prevT.clone());
 		
 		Matrix3 curR = new Matrix3();
@@ -161,15 +161,15 @@ public class AnimTimeline {
 			
 			//converting the resulting angles back to a rotation matrix.
 			curR = Matrix3.createRotationZ(curEuler.z)
-					.mulAfter(Matrix3.createRotationY(curEuler.y))
-					.mulAfter(Matrix3.createRotationX(curEuler.x));
+					.mulBefore(Matrix3.createRotationY(curEuler.y))
+					.mulBefore(Matrix3.createRotationX(curEuler.x));
 		}
 		else if (rotation == 1){
 			Quat q1 = new Quat(prevR);
 			Quat q2 = new Quat(nextR);
 			Quat q = q1.clone().scale((1f-t)).add(q2.clone().scale(t));
 			q.normalize();
-			q.toRotationMatrix(curR);
+			curR = q.toRotationMatrix(curR);
 		}
 		else{
 			Quat q1 = new Quat(prevR);
@@ -177,11 +177,11 @@ public class AnimTimeline {
 			
 			Quat q = q1.slerp(q1, q2, t);
 			q.normalize();
-			q.toRotationMatrix(curR);
+			curR = q.toRotationMatrix(curR);
 		}
 		
 		//Recompose the constituents to give a transformation for the current frame.
-		Matrix4 temp = new Matrix4(curS.clone().mulBefore(curR));
+		Matrix4 temp = new Matrix4(curS.clone().mulAfter(curR));
 		temp.m[12] = curT.x;
 		temp.m[13] = curT.y;
 		temp.m[14] = curT.z;
