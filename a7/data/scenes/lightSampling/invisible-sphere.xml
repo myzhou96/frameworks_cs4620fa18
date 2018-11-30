@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+A scene for testing glass to be sure the factors add up.
+It consists of a glass sphere in a constant-radius environment.  Such a sphere
+is invisible, because the reflected and refracted radiance will always add up
+to match the background.  However, with a limited maximum depth it will show a
+little darkness around the rim, where very long paths become significant.  This
+effect is not really visible to the naked eye with the default max depth of 12.
+ -->
+<scene>
+  <samples>1</samples>
+  <exposure>1</exposure>
+  <camera type="PerspectiveCamera">
+    <viewPoint>0 0 5</viewPoint>
+    <viewDir>0 0 -1</viewDir>
+    <viewUp>0 1 0</viewUp>
+    <projDistance>5</projDistance>
+    <viewWidth>2.5</viewWidth>
+    <viewHeight>2.5</viewHeight>
+  </camera>
+  <image>
+    450 450
+  </image>
+
+  <bsdf name="glass" type="GlassBSDF">
+    <refractiveIndex>1.5</refractiveIndex>
+  </bsdf>
+
+  <surface type="Sphere">
+    <bsdf ref="glass" />
+    <center>0 0 0</center>
+    <radius>1</radius>
+  </surface>
+
+  <environment type="Cubemap">
+    <filename>data/textures/cubemaps/all_white.pfm</filename>
+    <scaleFactor>0.8</scaleFactor>
+  </environment>
+
+</scene>
+

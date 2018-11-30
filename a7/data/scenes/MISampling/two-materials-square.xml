@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+A scene for testing environment illuminatino.
+It consists of a box standing on a plane, illuminated by a uniform environment.
+ -->
+<scene>
+  <samples>16</samples>
+  <exposure>1</exposure>
+  <camera type="PerspectiveCamera">
+    <viewPoint>0 0.5 1</viewPoint>
+    <viewDir>0 0 -1</viewDir>
+    <viewUp>0 1 0</viewUp>
+    <projDistance>0.6</projDistance>
+    <viewWidth>0.5</viewWidth>
+    <viewHeight>0.5</viewHeight>
+  </camera>
+  <image>
+    512 512
+  </image>
+
+  <bsdf name="ground1" type="LambertianBSDF">
+    <diffuseColor>0.5 0.5 0.5</diffuseColor>
+  </bsdf>
+
+  <bsdf name="ground2" type="GlazedBSDF">
+    <refractiveIndex>1.5</refractiveIndex>
+    <substrate type="LambertianBSDF">
+      <diffuseColor>0.5 0.5 0.5</diffuseColor>
+    </substrate>
+  </bsdf>
+
+  <surface type="Box">
+    <minpt>-6 -1 -16</minpt>
+    <maxpt>0 0 16</maxpt>
+    <bsdf ref="ground1" />
+  </surface>
+
+  <surface type="Box">
+    <minpt>0 -1 -16</minpt>
+    <maxpt>6 0 16</maxpt>
+    <bsdf ref="ground2" />
+  </surface>
+
+<!--   <light type="RectangleLight">
+    <position>0 0.5 -10</position>
+    <normalDir>0 0 1</normalDir>
+    <upDir>0 1 0</upDir>
+    <width>1</width>
+    <height>1</height>
+    <intensity>1 1 1</intensity>
+  </light>
+ -->
+  <environment type="Cubemap">
+    <filename>data/textures/cubemaps/small_square.pfm</filename>
+    <scaleFactor>1.0</scaleFactor>
+  </environment>
+
+
+</scene>
+

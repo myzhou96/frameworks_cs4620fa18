@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+A scene for testing environment illuminatino.
+It consists of a box standing on a plane, illuminated by a uniform environment.
+ -->
+<scene>
+  <samples>64</samples>
+  <exposure>.4</exposure>
+  <camera type="PerspectiveCamera">
+    <viewPoint>-4 8 -3</viewPoint>
+    <viewDir>4 -8 3</viewDir>
+    <viewUp>0 0 -1</viewUp>
+    <projDistance>1.2</projDistance>
+    <viewWidth>0.5</viewWidth>
+    <viewHeight>0.5</viewHeight>
+  </camera>
+  <image>
+    450 450
+  </image>
+
+  <integrator type="LightSamplingIntegrator" />
+
+  <bsdf name="ground" type="LambertianBSDF">
+    <diffuseColor>0.5 0.5 0.5</diffuseColor>
+  </bsdf>
+  <bsdf name="ball" type="LambertianBSDF">
+    <diffuseColor>0.1 0.2 0.4</diffuseColor>
+  </bsdf>
+
+  <environment type="Cubemap">
+    <filename>data/textures/cubemaps/uffizi_cross.pfm</filename>
+    <scaleFactor>1.0</scaleFactor>
+  </environment>  
+
+  <surface type="Box">
+    <minpt>-3 -3 0.7</minpt>
+    <maxpt>3 3 2</maxpt>
+    <bsdf ref="ground" />
+  </surface>
+  <surface type="Sphere">
+    <center>0.0 0.0 -0.3</center>
+    <radius>1.0</radius>
+    <bsdf ref="ball" />
+  </surface>
+
+</scene>
+

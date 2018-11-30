@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<scene>
+    <samples>256</samples>
+    <exposure>1</exposure>
+    <camera type="PerspectiveCamera">
+        <viewPoint>0 5 3</viewPoint>
+        <viewDir>0 -0.5 -1</viewDir>
+        <viewUp>0 1 0</viewUp>
+        <projDistance>0.3</projDistance>
+        <viewWidth>0.5</viewWidth>
+        <viewHeight>0.5</viewHeight>
+    </camera>
+    <image>
+        512 512
+    </image>
+
+    <bsdf name="glaze0" type="GlazedBSDF">
+        <refractiveIndex>1.9</refractiveIndex>
+        <substrate type="LambertianBSDF">
+            <diffuseColor>0.0 0.0 0.0 </diffuseColor>
+        </substrate>
+    </bsdf>
+
+    <bsdf name="diffuse" type="LambertianBSDF">
+        <diffuseColor>1.0 1.0 1.0</diffuseColor>
+    </bsdf>
+
+    <surface type="Group">
+        <translate>0 2 -5</translate>
+        <surface type="Mesh">
+            <data>../meshes/teapot.obj</data>
+            <bsdf ref="glaze0" />
+        </surface>
+        <surface type="Box">
+            <minpt>-3 -10 -3</minpt>
+            <maxpt>3 0 3</maxpt>
+            <bsdf ref="diffuse" />
+        </surface>
+    </surface>
+
+    <surface type="Box">
+        <minpt>-30 -1 -100</minpt>
+        <maxpt>30 0 16</maxpt>
+        <bsdf ref="glaze0" />
+    </surface>
+
+    <environment type="Cubemap">
+        <filename>data/textures/cubemaps/kitchen_cross.pfm</filename>
+        <scaleFactor>1.0</scaleFactor>
+    </environment>
+
+
+</scene>

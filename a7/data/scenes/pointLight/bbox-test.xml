@@ -1,0 +1,1250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--  A series of transformed cylinders and spheres, 
+to test that bounding boxes are transformed properly.
+ -->
+<scene>
+  <exposure>12.5</exposure>
+  <camera type="PerspectiveCamera">
+    <viewPoint>6 8 10</viewPoint>
+    <viewDir>-2.85 -4 -5</viewDir>
+    <viewUp>0 1 0</viewUp>
+    <projDistance>1.75</projDistance>
+    <viewWidth>1</viewWidth>
+    <viewHeight>0.5</viewHeight>
+  </camera>
+  <image>
+    1024 512
+  </image>
+  
+  <integrator type="PointLightIntegrator" /> 
+  
+  <bsdf name="gray" type="LambertianBSDF">
+    <diffuseColor>0.6 0.6 0.6</diffuseColor>
+  </bsdf>
+  <bsdf name="blue" type="LambertianBSDF">
+    <diffuseColor>0.4 0.4 1.0</diffuseColor>
+  </bsdf>
+
+  <surface type="Box">
+    <bsdf ref="gray" />
+    <minPt>-20 -5 -20</minPt>
+    <maxPt>20 -4 20</maxPt>
+  </surface>
+
+  
+  <light type="PointLight">
+    <position>-10 10 -10</position>
+    <intensity>10 10 10</intensity>
+  </light>
+
+  <light type="PointLight">
+    <position>-10 10 10</position>
+    <intensity>10 10 10</intensity>
+  </light>
+
+  <light type="PointLight">
+    <position>10 10 -10</position>
+    <intensity>10 10 10</intensity>
+  </light>
+
+  <light type="PointLight">
+    <position>10 10 10</position>
+    <intensity>10 10 10</intensity>
+  </light>
+
+<!--
+# Paste results of this script below.
+surf_fmt = """  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>{r_x} {r_y} 0</rotate>
+    <rotate>0 0 {r_z}</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+"""
+
+for angle in range(0, 360, 15):
+  print(surf_fmt.format(r_x=angle, r_y=0, r_z=0))
+
+print '<surface type="Group"><translate>-2.5 0 0</translate>'
+for angle in range(0, 360, 15):
+  print(surf_fmt.format(r_x=0, r_y=angle, r_z=0))
+print '</surface>'
+
+print '<surface type="Group"><translate>2.5 0 0</translate>'
+for angle in range(0, 360, 15):
+  print(surf_fmt.format(r_x=90, r_y=0, r_z=angle))
+print '</surface>'
+-->
+
+  <!-- begin script output -->
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>15 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>30 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>45 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>60 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>75 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>105 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>120 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>135 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>150 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>165 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>180 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>195 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>210 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>225 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>240 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>255 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>270 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>285 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>300 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>315 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>330 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>345 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+<surface type="Group"><translate>-2.5 0 0</translate>
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 15 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 30 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 45 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 60 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 75 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 90 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 105 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 120 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 135 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 150 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 165 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 180 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 195 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 210 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 225 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 240 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 255 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 270 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 285 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 300 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 315 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 330 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>0 345 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+</surface>
+<surface type="Group"><translate>2.5 0 0</translate>
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 0</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 15</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 30</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 45</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 60</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 75</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 90</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 105</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 120</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 135</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 150</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 165</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 180</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 195</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 210</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 225</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 240</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 255</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 270</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 285</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 300</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 315</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 330</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+  <surface type="Group">
+    <translate>0 0 1</translate>
+    <rotate>90 0 0</rotate>
+    <rotate>0 0 345</rotate>
+    <surface type="Cylinder">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <height>1</height>
+    </surface>
+    <surface type="Sphere">
+      <bsdf ref="blue" />
+      <radius>0.08</radius>
+      <center>0 0 0.62</center>
+    </surface>
+  </surface>
+
+</surface>
+
+
+  <!-- end script output -->
+
+</scene>
+

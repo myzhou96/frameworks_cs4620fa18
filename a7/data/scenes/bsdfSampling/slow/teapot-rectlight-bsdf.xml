@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--  Test scene with a single sphere.
+ -->
+<scene>
+  <exposure>15</exposure>
+  <samples>128</samples>
+  <camera type="PerspectiveCamera">
+    <viewPoint>4 6 6</viewPoint>
+    <viewDir>-4 -6 -6</viewDir>
+    <viewUp>0 1 0</viewUp>
+    <projDistance>5</projDistance>
+    <viewWidth>5</viewWidth>
+    <viewHeight>5</viewHeight>
+  </camera>
+  <image>
+    1000 1000
+  </image>
+
+  <integrator type="BSDFSamplingIntegrator" />
+
+  <bsdf name="teapot" type="MicrofacetBSDF">
+    <specularColor>.2 .3 .8</specularColor>
+    <diffuseColor>.1 .15 .4</diffuseColor>
+    <roughness>0.1</roughness>
+    <refractiveIndex>10</refractiveIndex>
+    <disttype>0</disttype>
+  </bsdf>
+  <surface type="Mesh">
+    <bsdf ref="teapot" />
+    <data>../meshes/teapot.obj</data>
+  </surface>
+
+  <light type="RectangleLight">
+    <position>10 0 0</position>
+    <normalDir>-1 0 0</normalDir>
+    <upDir>0 0 1</upDir>
+    <width>100</width>
+    <height>100</height>
+    <intensity>0.01 0.01 0.01</intensity>
+  </light>
+
+</scene>

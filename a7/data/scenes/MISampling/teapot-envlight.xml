@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--  Test scene with a single sphere.
+ -->
+<scene>
+  <samples>128</samples>
+  <exposure>1</exposure>
+  <camera type="PerspectiveCamera">
+    <viewPoint>4 6 6</viewPoint>
+    <viewDir>-4 -6 -6</viewDir>
+    <viewUp>0 1 0</viewUp>
+    <projDistance>5</projDistance>
+    <viewWidth>5</viewWidth>
+    <viewHeight>5</viewHeight>
+  </camera>
+  <image>
+    1000 1000
+  </image>
+
+  <integrator type="MISIntegrator" />
+
+  <bsdf name="teapot" type="MicrofacetBSDF">
+    <specularColor>.2 .3 .8</specularColor>
+    <diffuseColor>.1 .15 .4</diffuseColor>
+    <roughness>0.5</roughness>
+    <refractiveIndex>10</refractiveIndex>
+    <disttype>0</disttype>
+  </bsdf>
+  <surface type="Mesh">
+    <bsdf ref="teapot" />
+    <data>../meshes/teapot.obj</data>
+  </surface>
+
+  <environment type="Cubemap">
+      <filename>data/textures/cubemaps/all_white.pfm</filename>
+  </environment>
+
+</scene>

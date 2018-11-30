@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+A scene for testing environment illuminatino.
+It consists of a box standing on a plane, illuminated by a uniform environment.
+ -->
+<scene>
+  <samples>256</samples>
+  <exposure>4</exposure>
+  <camera type="PerspectiveCamera">
+    <viewPoint>-4 3 8</viewPoint>
+    <viewDir>4 -3 -7</viewDir>
+    <viewUp>0 1 0</viewUp>
+    <projDistance>1.2</projDistance>
+    <viewWidth>0.5</viewWidth>
+    <viewHeight>0.5</viewHeight>
+  </camera>
+  <image>
+    450 450
+  </image>
+
+  <integrator type="LightSamplingIntegrator" />
+
+  <bsdf name="ground" type="LambertianBSDF">
+    <diffuseColor>0.5 0.5 0.5</diffuseColor>
+  </bsdf>
+
+  <surface type="Box">
+    <minpt>-6 -1 -6</minpt>
+    <maxpt>6 0 6</maxpt>
+    <bsdf ref="ground" />
+  </surface>
+
+  <light type="RectangleLight">
+    <position>0 0.5 0</position>
+    <normalDir>0 0 1</normalDir>
+    <upDir>0 1 0</upDir>
+    <width>1</width>
+    <height>1</height>
+    <intensity>1 1 1</intensity>
+  </light>
+
+</scene>
+
