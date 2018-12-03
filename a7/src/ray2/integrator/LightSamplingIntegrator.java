@@ -10,6 +10,7 @@ import ray2.Scene;
 import ray2.light.Environment;
 import ray2.light.Light;
 import ray2.light.LightSamplingRecord;
+import ray2.light.PointLight;
 import ray2.material.BSDF;
 import ray2.material.BSDFSamplingRecord;
 import ray2.surface.Surface;
@@ -73,15 +74,18 @@ public class LightSamplingIntegrator extends Integrator {
 				LightSamplingRecord record = new LightSamplingRecord();
 				if (!isShadowed(scene, record, iRec, ray)) {
 					l.sample(record, iRec.location);
-					Colord outBSDF = new Colord();
-					iRec.surface.getBSDF().eval(record.direction, iRec.location.normalize(), iRec.normal, outBSDF);
-					Colord sourceRadiance = new Colord();
-					l.eval(ray, sourceRadiance);
-//						(source radiance) * brdf * attenuation * (cos theta) / pdf, and add it
-					Vector3d direction = iRec.location.clone().sub(iRec.location).normalize();
-					double nDotL = iRec.normal.dot(direction);
-					Colord L = new Colord(sourceRadiance.mul(outBSDF).mul(record.attenuation));
+					if (!isShadowed(scene, record, iRec, ray)) {
+						Colord srcRadiance = new Colord();
+						l.eval(ray, srcRadiance);
+						Colord brdf = new Colord();
+						iRec.surface.getBSDF().eval(record.direction, iRec.location.normalize().mul(-1), iRec.normal, brdf);
+						double cosTheta = Math.abs(iRec.normal.dot(record.direction)); // assume direction and normal are normalized
+						outRadiance.add(srcRadiance.mul(brdf).mul(record.attenuation).mul(cosTheta/record.probability));
+					}
 				}
+			}
+			else {
+
 			}
 		}
 		 
