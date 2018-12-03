@@ -32,17 +32,19 @@ public class PointLightIntegrator extends Integrator {
 		// TODO#A7: Calculate outRadiance at current shading point.
 		for (Light l : scene.getLights()) {
 			if (l instanceof PointLight) {
-				System.out.println("Init: " + outRadiance.toString());
-				double distanceSq = ((PointLight) l).getPosition().distSq(iRec.location);
-				Vector3d direction = ((PointLight) l).getPosition().clone().sub(iRec.location).normalize();
-				double nDotL = iRec.normal.dot(direction);
-				if (nDotL <= 0.0) {
-					outRadiance.set(Colord.BLACK);
-				}
-				else {
-					iRec.surface.getBSDF().eval(direction, iRec.location.normalize(), iRec.normal, outRadiance);
-					Vector3d irradiance = ((PointLight) l).getIntensity().clone().div(distanceSq).mul(nDotL);
-					outRadiance.mul(irradiance);
+				if (!isShadowed(scene, iRec.location, ((PointLight) l).getPosition())) {
+					System.out.println("Init: " + outRadiance.toString());
+					double distanceSq = ((PointLight) l).getPosition().distSq(iRec.location);
+					Vector3d direction = ((PointLight) l).getPosition().clone().sub(iRec.location).normalize();
+					double nDotL = iRec.normal.dot(direction);
+					if (nDotL <= 0.0) {
+						outRadiance.set(Colord.BLACK);
+					}
+					else {
+						iRec.surface.getBSDF().eval(direction, iRec.location.normalize(), iRec.normal, outRadiance);
+						Vector3d irradiance = ((PointLight) l).getIntensity().clone().div(distanceSq).mul(nDotL);
+						outRadiance.mul(irradiance);
+					}
 				}
 				System.out.println("Final: " + outRadiance.toString());
 			}
