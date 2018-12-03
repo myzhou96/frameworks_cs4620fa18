@@ -29,7 +29,7 @@ public class PointLightIntegrator extends Integrator {
 	 */
 	@Override
 	public void shade(Colord outRadiance, Scene scene, Ray ray, IntersectionRecord iRec, int depth) {
-		// TODO#A7: Calculate outRaidance at current shading point.
+		// TODO#A7: Calculate outRadiance at current shading point.
 		for (Light l : scene.getLights()) {
 			if (l instanceof PointLight) {
 				System.out.println("Init: " + outRadiance.toString());
@@ -42,7 +42,7 @@ public class PointLightIntegrator extends Integrator {
 				else {
 					iRec.surface.getBSDF().eval(direction, iRec.location.normalize(), iRec.normal, outRadiance);
 					Vector3d irradiance = ((PointLight) l).getIntensity().clone().div(distanceSq).mul(nDotL);
-					outRadiance.add(irradiance);
+					outRadiance.mul(irradiance);
 				}
 				System.out.println("Final: " + outRadiance.toString());
 			}
