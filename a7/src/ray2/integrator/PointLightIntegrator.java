@@ -33,11 +33,18 @@ public class PointLightIntegrator extends Integrator {
 		for (Light l : scene.getLights()) {
 			if (l instanceof PointLight) {
 				System.out.println("Init: " + outRadiance.toString());
-				double distance = ((PointLight) l).getPosition().dist(iRec.location);
+				double distanceSq = ((PointLight) l).getPosition().distSq(iRec.location);
 				Vector3d direction = ((PointLight) l).getPosition().clone().sub(iRec.location).normalize();
-				iRec.surface.getBSDF().eval(direction, iRec.location.normalize(), iRec.normal, outRadiance);
-				System.out.println(outRadiance.toString());
-				// add radiance
+				double nDotL = iRec.normal.dot(direction);
+				if (nDotL <= 0.0) {
+					outRadiance.set(Colord.BLACK);
+				}
+				else {
+					iRec.surface.getBSDF().eval(direction, iRec.location.normalize(), iRec.normal, outRadiance);
+					Vector3d irradiance = ((PointLight) l).getIntensity().clone().div(distanceSq).mul(Math.max(0.0, nDotL));
+					outRadiance = new Colord(irradiance);
+				}
+				System.out.println("Final: " + outRadiance.toString());
 			}
 		}
 	}
