@@ -66,6 +66,15 @@ public class LightSamplingIntegrator extends Integrator {
 	    // You need to add contribution from each light,
 	    // add contribution from environment light if there is any.
 	    // add mirror reflection and refraction.
+		for (Surface s : scene.getSurfaces()) {
+			Light l = s.getLight();
+			// add radiance
+			if (l != null) {
+				LightSamplingRecord record = new LightSamplingRecord();
+				l.sample(record, iRec.location);
+				s.getBSDF().eval(record.direction, iRec.location.normalize(), iRec.normal, outRadiance);
+			}
+		}
 		 
 	}
 
