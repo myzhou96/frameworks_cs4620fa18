@@ -42,8 +42,8 @@ public class PointLightIntegrator extends Integrator {
 					}
 					else {
 						iRec.surface.getBSDF().eval(direction, iRec.location.normalize(), iRec.normal, outRadiance);
-						Vector3d irradiance = ((PointLight) l).getIntensity().clone().div(distanceSq).mul(nDotL);
-						outRadiance.mul(irradiance);
+						l.eval(ray, outRadiance);
+						outRadiance.mul(nDotL/distanceSq);
 					}
 				}
 				System.out.println("Final: " + outRadiance.toString());
