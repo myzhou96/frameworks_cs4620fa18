@@ -73,7 +73,14 @@ public class LightSamplingIntegrator extends Integrator {
 				LightSamplingRecord record = new LightSamplingRecord();
 				if (!isShadowed(scene, record, iRec, ray)) {
 					l.sample(record, iRec.location);
-					iRec.surface.getBSDF().eval(record.direction, iRec.location.normalize(), iRec.normal, outRadiance);
+					Colord outBSDF = new Colord();
+					iRec.surface.getBSDF().eval(record.direction, iRec.location.normalize(), iRec.normal, outBSDF);
+					Colord sourceRadiance = new Colord();
+					l.eval(ray, sourceRadiance);
+//						(source radiance) * brdf * attenuation * (cos theta) / pdf, and add it
+					Vector3d direction = iRec.location.clone().sub(iRec.location).normalize();
+					double nDotL = iRec.normal.dot(direction);
+					Colord L = new Colord(sourceRadiance.mul(outBSDF).mul(record.attenuation));
 				}
 			}
 		}
