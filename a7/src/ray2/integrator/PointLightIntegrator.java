@@ -33,20 +33,26 @@ public class PointLightIntegrator extends Integrator {
 		for (Light l : scene.getLights()) {
 			if (l instanceof PointLight) {
 				if (!isShadowed(scene, iRec.location, ((PointLight) l).getPosition())) {
-					System.out.println("Init: " + outRadiance.toString());
+//					System.out.println("Init: " + outRadiance.toString());
 					double distanceSq = ((PointLight) l).getPosition().distSq(iRec.location);
+					//View Direction or referred to as incoming
 					Vector3d direction = ((PointLight) l).getPosition().clone().sub(iRec.location).normalize();
 					double nDotL = iRec.normal.dot(direction);
 					if (nDotL <= 0.0) {
 						outRadiance.set(Colord.BLACK);
 					}
 					else {
-						iRec.surface.getBSDF().eval(direction, iRec.location.normalize(), iRec.normal, outRadiance);
-						l.eval(ray, outRadiance);
-						outRadiance.mul(nDotL/distanceSq);
+//						iRec.surface.getBSDF().eval(direction, iRec.location.normalize(), iRec.normal, outRadiance);
+						Colord outBSDF = new Colord();
+						//direction and direction???
+						iRec.surface.getBSDF().eval(direction, direction, iRec.normal, outBSDF);
+						Colord intensity = new Colord();
+						l.eval(ray, intensity); //intensity
+						Colord L = new Colord(intensity.mul(outBSDF).mul(nDotL/distanceSq));
+						outRadiance.add(L);
 					}
 				}
-				System.out.println("Final: " + outRadiance.toString());
+//				System.out.println("Final: " + outRadiance.toString());
 			}
 		}
 	}
