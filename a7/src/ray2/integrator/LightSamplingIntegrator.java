@@ -95,21 +95,21 @@ public class LightSamplingIntegrator extends Integrator {
 //				*          as (source radiance) * brdf * attenuation * (cos theta) / pdf, and add it
 		for (Light l : scene.getLights()) {
 			//sample point on light
-			LightSamplingRecord record = new LightSamplingRecord();
-			l.sample(record, iRec.location);
+			LightSamplingRecord lightRecord = new LightSamplingRecord();
+			l.sample(lightRecord, iRec.location);
 			
 			//evaluate BRDF
 			Colord brdfVal = new Colord();
-			iRec.surface.getBSDF().eval(record.direction, ray.direction.clone().negate().normalize(), 
+			iRec.surface.getBSDF().eval(lightRecord.direction, ray.direction.clone().negate().normalize(), 
 					iRec.normal.clone().normalize(), brdfVal);
 			
 			//shadow test
-			Ray shadowRay = new Ray(iRec.location, record.direction);
-			if (!isShadowed(scene, record, iRec, shadowRay)) {
+			Ray shadowRay = new Ray(iRec.location, lightRecord.direction);
+			if (!isShadowed(scene, lightRecord, iRec, shadowRay)) {
 				Colord lightVal = new Colord();
 				l.eval(shadowRay, lightVal);
-				double cosTheta = Math.abs(iRec.normal.clone().normalize().dot(record.direction.normalize()));
-				outRadiance.add(lightVal.mul(brdfVal).mul(record.attenuation).div(record.probability));
+				double cosTheta = Math.abs(iRec.normal.clone().normalize().dot(lightRecord.direction.normalize()));
+				outRadiance.add(lightVal.mul(brdfVal).mul(lightRecord.attenuation).mul(cosTheta).div(lightRecord.probability));
 				
 			}
 		}

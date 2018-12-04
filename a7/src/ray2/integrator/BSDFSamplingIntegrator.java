@@ -103,13 +103,13 @@ public class BSDFSamplingIntegrator extends Integrator {
 		if(scene.getFirstIntersection(iRec2, bsdfRay)){
 			//for discrete directions, shade the ray recursively to get incident radiance
 			if(bsdfRecord.isDiscrete){
-//				RayTracer.shadeRay(incidentRad, scene, bsdfRay, depth + 1);
-				this.shade(incidentRad, scene, ray, iRec2, depth);
+				RayTracer.shadeRay(incidentRad, scene, bsdfRay, depth + 1);
+//				this.shade(incidentRad, scene, ray, iRec2, depth);
 			}
 			else{
 				//for non-discrete, incident radiance is source radiance if you hit a source (else 0)
 				if(iRec2.surface.getLight() != null){
-					iRec2.surface.getLight().eval(bsdfRay, incidentRad); 
+					iRec2.surface.getLight().eval(bsdfRay, incidentRad);
 				}
 				else{
 					incidentRad = new Colord();
@@ -126,7 +126,7 @@ public class BSDFSamplingIntegrator extends Integrator {
 		//compute the estimate for reflected radiance as incident radiance * brdf * cos theta / pdf
 		//Vector3d direction = ((PointLight) l).getPosition().clone().sub(iRec.location).normalize();
 		//cosTheta is incorrect
-		double cosTheta = Math.abs(iRec.normal.clone().normalize().dot(bsdfRecord.dir1.clone().normalize()));
+		double cosTheta = Math.abs(iRec.normal.clone().normalize().dot(bsdfRecord.dir2.clone().normalize()));
 		outRadiance.add(incidentRad.clone().mul(outColor).mul(cosTheta).div(brdfPdf));
 		
 		
@@ -141,7 +141,7 @@ public class BSDFSamplingIntegrator extends Integrator {
 					double distanceSq = ((PointLight) l).getPosition().distSq(iRec.location);
 					//View Direction or referred to as incoming
 					Vector3d direction = ((PointLight) l).getPosition().clone().sub(iRec.location).normalize();
-					double nDotL = iRec.normal.clone().dot(direction);
+					double nDotL = iRec.normal.clone().normalize().dot(direction);
 					if (nDotL <= 0.0) {
 						outRadiance.set(Colord.BLACK);
 					}
@@ -150,7 +150,7 @@ public class BSDFSamplingIntegrator extends Integrator {
 						iRec.surface.getBSDF().eval(direction, ray.direction.clone().negate(), iRec.normal.clone(), outBSDF);
 						Colord intensity = new Colord();
 						l.eval(ray, intensity); // intensity
-						Colord L = new Colord(intensity.mul(outBSDF).mul(nDotL/distanceSq));
+						Colord L = new Colord(intensity.mul(outBSDF).mul(nDotL).div(distanceSq));
 						outRadiance.add(L);
 					}
 				}
