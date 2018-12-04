@@ -73,6 +73,8 @@ public class LightSamplingIntegrator extends Integrator {
 	    // add mirror reflection and refraction.
 
 		// step 0: light source emission
+//		if the surface is a light source:
+//	 *        add the source's radiance
 		if (iRec.surface != null) {
 			Light l = iRec.surface.getLight();
 			if (l != null) {
@@ -82,13 +84,19 @@ public class LightSamplingIntegrator extends Integrator {
 					Colord srcRadiance = new Colord();
 					l.eval(ray, srcRadiance);
 					Colord brdf = new Colord();
-					iRec.surface.getBSDF().eval(record.direction, iRec.location.clone().normalize().mul(-1), iRec.normal, brdf);
+					iRec.surface.getBSDF().eval(record.direction, iRec.location.clone().normalize(), iRec.normal, brdf);
 					outRadiance.add(srcRadiance.mul(brdf).mul(record.attenuation).div(record.probability));
 				}
 			}
 		}
 
 		// step 1: light sources
+//		for each light in the scene
+//				*        choose a point on the light
+//				*        evaluate the BRDF
+//	 *        do a shadow test
+//				*        compute the estimate of this light's contribution
+//				*          as (source radiance) * brdf * attenuation * (cos theta) / pdf, and add it
 		for (Light l : scene.getLights()) {
 			LightSamplingRecord record = new LightSamplingRecord();
 			if (!isShadowed(scene, record, iRec, ray)) {
@@ -96,9 +104,8 @@ public class LightSamplingIntegrator extends Integrator {
 				Colord srcRadiance = new Colord();
 				l.eval(ray, srcRadiance);
 				Colord brdf = new Colord();
-				iRec.surface.getBSDF().eval(record.direction, iRec.location.clone().normalize().mul(-1), iRec.normal, brdf);
-				double cosTheta = Math.abs(iRec.normal.dot(record.direction)); // assume direction and normal are normalized
-				outRadiance.add(srcRadiance.mul(brdf).mul(record.attenuation).mul(cosTheta / record.probability));
+				iRec.surface.getBSDF().eval(record.direction, iRec.location.clone().normalize(), iRec.normal, brdf);
+				outRadiance.add(srcRadiance.mul(brdf).mul(record.attenuation).div(record.probability));
 			}
 		}
 
@@ -109,6 +116,7 @@ public class LightSamplingIntegrator extends Integrator {
 //	 *      compute the estimate of the environment's contribution
 //	 *        as (env radiance) * brdf * (cos theta) / pdf, and add it
 		Vector2d seed = new Vector2d(Math.random(), Math.random());
+
 		Environment env = scene.getEnvironment();
 		if (env != null) {
 			Vector3d direction = new Vector3d();
@@ -118,12 +126,12 @@ public class LightSamplingIntegrator extends Integrator {
 			env.eval(direction, update2);
 
 			Colord brdf = new Colord();
-			iRec.surface.getBSDF().eval(direction, iRec.location.clone().normalize().mul(-1), iRec.normal, brdf);
+			iRec.surface.getBSDF().eval(direction, iRec.location.clone().normalize(), iRec.normal, brdf);
 
 			Ray shadowRay = new Ray(iRec.location, direction);
 			LightSamplingRecord record = new LightSamplingRecord();
 			if (!isShadowed(scene, record, iRec, shadowRay)) {
-				Colord update = new Colord(update1.mul(update2).mul(brdf));
+				Colord update = new Colord(update1.mul(update2).mul(brdf).div(pdf));
 				outRadiance.add(update);
 			}
 		}
@@ -133,7 +141,7 @@ public class LightSamplingIntegrator extends Integrator {
 
 		// 3: mirror reflections and refractions
 //		choose a direction from the BSDF, continuing only if it is discrete
-//		trace a recursive ray
+//		trace a recursive ray call shadeRay
 // 		add the recursive radiance weighted by (cos theta) * (brdf value) / (probability)
 		BSDFSamplingRecord bsdfRecord = new BSDFSamplingRecord();
 		Colord brdf = new Colord();
