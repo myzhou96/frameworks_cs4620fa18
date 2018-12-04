@@ -42,8 +42,7 @@ public class PointLightIntegrator extends Integrator {
 					}
 					else {
 						Colord outBSDF = new Colord();
-						// iRec.surface.getBSDF().eval(direction, ray.direction.negate(), iRec.normal, updateBSDF);
-						iRec.surface.getBSDF().eval(direction, direction, iRec.normal, outBSDF);
+						iRec.surface.getBSDF().eval(direction, ray.direction.clone().negate(), iRec.normal, outBSDF);
 						Colord intensity = new Colord();
 						l.eval(ray, intensity); // intensity
 						Colord L = new Colord(intensity.mul(outBSDF).mul(nDotL/distanceSq));

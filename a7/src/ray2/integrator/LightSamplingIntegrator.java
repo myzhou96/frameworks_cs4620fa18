@@ -1,5 +1,7 @@
 package ray2.integrator;
 
+import com.sun.javafx.geom.Vec2d;
+import egl.math.Color;
 import egl.math.Colord;
 import egl.math.Vector2d;
 import egl.math.Vector3d;
@@ -14,6 +16,8 @@ import ray2.light.PointLight;
 import ray2.material.BSDF;
 import ray2.material.BSDFSamplingRecord;
 import ray2.surface.Surface;
+
+import static java.lang.Math.random;
 
 /**
  * An Integrator that works by sampling light sources.  It accounts for light that illuminates all surfaces
@@ -67,28 +71,79 @@ public class LightSamplingIntegrator extends Integrator {
 	    // You need to add contribution from each light,
 	    // add contribution from environment light if there is any.
 	    // add mirror reflection and refraction.
+
+		// step 0: light source emission
 		if (iRec.surface != null) {
 			Light l = iRec.surface.getLight();
 			if (l != null) {
-				// add radiance
 				LightSamplingRecord record = new LightSamplingRecord();
 				if (!isShadowed(scene, record, iRec, ray)) {
 					l.sample(record, iRec.location);
-					if (!isShadowed(scene, record, iRec, ray)) {
-						Colord srcRadiance = new Colord();
-						l.eval(ray, srcRadiance);
-						Colord brdf = new Colord();
-						iRec.surface.getBSDF().eval(record.direction, iRec.location.normalize().mul(-1), iRec.normal, brdf);
-						double cosTheta = Math.abs(iRec.normal.dot(record.direction)); // assume direction and normal are normalized
-						outRadiance.add(srcRadiance.mul(brdf).mul(record.attenuation).mul(cosTheta/record.probability));
-					}
+					Colord srcRadiance = new Colord();
+					l.eval(ray, srcRadiance);
+					Colord brdf = new Colord();
+					iRec.surface.getBSDF().eval(record.direction, iRec.location.clone().normalize().mul(-1), iRec.normal, brdf);
+					outRadiance.add(srcRadiance.mul(brdf).mul(record.attenuation).div(record.probability));
 				}
 			}
-			else {
+		}
 
+		// step 1: light sources
+		for (Light l : scene.getLights()) {
+			LightSamplingRecord record = new LightSamplingRecord();
+			if (!isShadowed(scene, record, iRec, ray)) {
+				l.sample(record, iRec.location);
+				Colord srcRadiance = new Colord();
+				l.eval(ray, srcRadiance);
+				Colord brdf = new Colord();
+				iRec.surface.getBSDF().eval(record.direction, iRec.location.clone().normalize().mul(-1), iRec.normal, brdf);
+				double cosTheta = Math.abs(iRec.normal.dot(record.direction)); // assume direction and normal are normalized
+				outRadiance.add(srcRadiance.mul(brdf).mul(record.attenuation).mul(cosTheta / record.probability));
 			}
 		}
-		 
+
+		// step 2: environment
+//	 *      choose a direction from the environment
+//	 *      evaluate the BRDF
+//	 *      do a shadow test
+//	 *      compute the estimate of the environment's contribution
+//	 *        as (env radiance) * brdf * (cos theta) / pdf, and add it
+		Vector2d seed = new Vector2d(Math.random(), Math.random());
+		Environment env = scene.getEnvironment();
+		if (env != null) {
+			Vector3d direction = new Vector3d();
+			Colord update1 = new Colord();
+			double pdf = env.sample(seed, direction, update1);
+			Colord update2 = new Colord();
+			env.eval(direction, update2);
+
+			Colord brdf = new Colord();
+			iRec.surface.getBSDF().eval(direction, iRec.location.clone().normalize().mul(-1), iRec.normal, brdf);
+
+			Ray shadowRay = new Ray(iRec.location, direction);
+			LightSamplingRecord record = new LightSamplingRecord();
+			if (!isShadowed(scene, record, iRec, shadowRay)) {
+				Colord update = new Colord(update1.mul(update2).mul(brdf));
+				outRadiance.add(update);
+			}
+		}
+		else {
+			outRadiance.set(Color.Black);
+		}
+
+		// 3: mirror reflections and refractions
+//		choose a direction from the BSDF, continuing only if it is discrete
+//		trace a recursive ray
+// 		add the recursive radiance weighted by (cos theta) * (brdf value) / (probability)
+		BSDFSamplingRecord bsdfRecord = new BSDFSamplingRecord();
+		Colord brdf = new Colord();
+		iRec.surface.getBSDF().sample(bsdfRecord, seed, brdf);
+		if (bsdfRecord.isDiscrete) {
+			// trace a recursive ray
+			// add radiance cos(theta) * brdf / prob
+		}
+
+//
 	}
 
 	/**
