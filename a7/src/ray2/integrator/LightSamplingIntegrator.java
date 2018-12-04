@@ -78,15 +78,11 @@ public class LightSamplingIntegrator extends Integrator {
 		if (iRec.surface != null) {
 			Light l = iRec.surface.getLight();
 			if (l != null) {
-				LightSamplingRecord record = new LightSamplingRecord();
-				if (!isShadowed(scene, record, iRec, ray)) {
-					l.sample(record, iRec.location);
-					Colord srcRadiance = new Colord();
-					l.eval(ray, srcRadiance);
-					Colord brdf = new Colord();
-					iRec.surface.getBSDF().eval(record.direction, iRec.location.clone().normalize(), iRec.normal, brdf);
-					outRadiance.add(srcRadiance.mul(brdf).mul(record.attenuation).div(record.probability));
-				}
+				//add source radiance, check which ray to put into eval
+				Colord sourceRadiance = new Colord();
+				l.eval(ray, sourceRadiance); 
+				outRadiance.add(sourceRadiance);
+				
 			}
 		}
 
@@ -94,18 +90,27 @@ public class LightSamplingIntegrator extends Integrator {
 //		for each light in the scene
 //				*        choose a point on the light
 //				*        evaluate the BRDF
-//	 *        do a shadow test
+//	 			*        do a shadow test
 //				*        compute the estimate of this light's contribution
 //				*          as (source radiance) * brdf * attenuation * (cos theta) / pdf, and add it
 		for (Light l : scene.getLights()) {
+			//sample point on light
 			LightSamplingRecord record = new LightSamplingRecord();
-			if (!isShadowed(scene, record, iRec, ray)) {
-				l.sample(record, iRec.location);
-				Colord srcRadiance = new Colord();
-				l.eval(ray, srcRadiance);
-				Colord brdf = new Colord();
-				iRec.surface.getBSDF().eval(record.direction, iRec.location.clone().normalize(), iRec.normal, brdf);
-				outRadiance.add(srcRadiance.mul(brdf).mul(record.attenuation).div(record.probability));
+			l.sample(record, iRec.location);
+			
+			//evaluate BRDF
+			Colord brdfVal = new Colord();
+			iRec.surface.getBSDF().eval(record.direction, ray.direction.clone().negate().normalize(), 
+					iRec.normal.clone().normalize(), brdfVal);
+			
+			//shadow test
+			Ray shadowRay = new Ray(iRec.location, record.direction);
+			if (!isShadowed(scene, record, iRec, shadowRay)) {
+				Colord lightVal = new Colord();
+				l.eval(shadowRay, lightVal);
+				double cosTheta = Math.abs(iRec.normal.clone().normalize().dot(record.direction.normalize()));
+				outRadiance.add(lightVal.mul(brdfVal).mul(record.attenuation).div(record.probability));
+				
 			}
 		}
 
@@ -115,43 +120,48 @@ public class LightSamplingIntegrator extends Integrator {
 //	 *      do a shadow test
 //	 *      compute the estimate of the environment's contribution
 //	 *        as (env radiance) * brdf * (cos theta) / pdf, and add it
-		Vector2d seed = new Vector2d(Math.random(), Math.random());
-
 		Environment env = scene.getEnvironment();
 		if (env != null) {
 			Vector3d direction = new Vector3d();
-			Colord update1 = new Colord();
-			double pdf = env.sample(seed, direction, update1);
-			Colord update2 = new Colord();
-			env.eval(direction, update2);
-
-			Colord brdf = new Colord();
-			iRec.surface.getBSDF().eval(direction, iRec.location.clone().normalize(), iRec.normal, brdf);
-
-			Ray shadowRay = new Ray(iRec.location, direction);
-			LightSamplingRecord record = new LightSamplingRecord();
-			if (!isShadowed(scene, record, iRec, shadowRay)) {
-				Colord update = new Colord(update1.mul(update2).mul(brdf).div(pdf));
+			Colord sampRadiance = new Colord();
+			Vector2d seed = new Vector2d(Math.random(), Math.random());
+			double pdf = env.sample(seed, direction, sampRadiance);
+			
+			//evaluate brdf
+			Colord brdfVal = new Colord();
+			iRec.surface.getBSDF().eval(direction.clone().normalize(), ray.direction.clone().negate().normalize(), iRec.normal.clone().normalize(), brdfVal);
+			
+			//do a shadow test
+			Ray shadowRay = new Ray(iRec.location, direction.clone().normalize());
+			shadowRay.makeOffsetRay();
+			
+			if (! scene.getAnyIntersection(shadowRay)) {
+				double cosTheta = Math.abs(iRec.normal.clone().normalize().dot(direction.normalize()));
+				Colord update = new Colord(sampRadiance.mul(brdfVal).mul(cosTheta).div(pdf));
 				outRadiance.add(update);
 			}
-		}
-		else {
-			outRadiance.set(Color.Black);
 		}
 
 		// 3: mirror reflections and refractions
 //		choose a direction from the BSDF, continuing only if it is discrete
 //		trace a recursive ray call shadeRay
-// 		add the recursive radiance weighted by (cos theta) * (brdf value) / (probability)
-		BSDFSamplingRecord bsdfRecord = new BSDFSamplingRecord();
-		Colord brdf = new Colord();
-		iRec.surface.getBSDF().sample(bsdfRecord, seed, brdf);
+// 		add the recursive radiance weighted by (cos theta) * (brdf value) / (probability)		
+		BSDFSamplingRecord bsdfRecord = new BSDFSamplingRecord(ray.direction.clone().negate().normalize(), iRec.normal); 
+		Colord brdfColor = new Colord();
+		Vector2d seed = new Vector2d(Math.random(), Math.random());
+		double brdfPdf = iRec.surface.getBSDF().sample(bsdfRecord, seed, brdfColor); //outColor here is our brdf
+		
 		if (bsdfRecord.isDiscrete) {
 			// trace a recursive ray
 			// add radiance cos(theta) * brdf / prob
+			Colord recursiveRad = new Colord();
+			Ray bsdfRay = new Ray(iRec.location.clone(), bsdfRecord.dir2.clone().normalize());
+			bsdfRay.makeOffsetRay();
+			RayTracer.shadeRay(recursiveRad, scene, bsdfRay, depth + 1);
+			double cosTheta = Math.abs(iRec.normal.clone().normalize().dot(bsdfRecord.dir1.clone().normalize()));
+			outRadiance.add(recursiveRad.clone().mul(brdfColor).mul(cosTheta).div(brdfPdf));
+			
 		}
-
-//
 	}
 
 	/**

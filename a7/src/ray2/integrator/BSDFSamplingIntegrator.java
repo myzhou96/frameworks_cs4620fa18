@@ -94,16 +94,17 @@ public class BSDFSamplingIntegrator extends Integrator {
 		double brdfPdf = iRec.surface.getBSDF().sample(bsdfRecord, seed, outColor); //outColor here is our brdf
 		
 		//trace the ray, is this the right origin???
-		Ray bsdfRay = new Ray(iRec.location.clone(), bsdfRecord.dir2.clone().normalize());
+		Ray bsdfRay = new Ray(iRec.location.clone(), bsdfRecord.dir2.clone());
 		bsdfRay.makeOffsetRay();
 		Colord incidentRad = new Colord();
+		
 		//If you hit a surface
 		IntersectionRecord iRec2 = new IntersectionRecord();
 		if(scene.getFirstIntersection(iRec2, bsdfRay)){
 			//for discrete directions, shade the ray recursively to get incident radiance
 			if(bsdfRecord.isDiscrete){
-				RayTracer.shadeRay(incidentRad, scene, bsdfRay, depth + 1);
-//				this.shade(incidentRad, scene, bsdfRay, iRec2, depth);
+//				RayTracer.shadeRay(incidentRad, scene, bsdfRay, depth + 1);
+				this.shade(incidentRad, scene, ray, iRec2, depth);
 			}
 			else{
 				//for non-discrete, incident radiance is source radiance if you hit a source (else 0)
@@ -111,13 +112,12 @@ public class BSDFSamplingIntegrator extends Integrator {
 					iRec2.surface.getLight().eval(bsdfRay, incidentRad); 
 				}
 				else{
-					incidentRad.set(Colord.BLACK);
+					incidentRad = new Colord();
 				}
 			}
 		}
 		else{
-			//hit nothing
-			//look up incident radiance from the environment, not sure if direction is correct
+			//hit nothing, look up incident radiance from the environment, not sure if direction is correct
 			if(scene.getEnvironment() != null){
 				scene.getEnvironment().eval(bsdfRecord.dir2, incidentRad);
 			}
@@ -126,10 +126,8 @@ public class BSDFSamplingIntegrator extends Integrator {
 		//compute the estimate for reflected radiance as incident radiance * brdf * cos theta / pdf
 		//Vector3d direction = ((PointLight) l).getPosition().clone().sub(iRec.location).normalize();
 		//cosTheta is incorrect
-		double cosTheta = Math.abs(iRec.normal.clone().normalize().dot(bsdfRecord.dir1.clone()));
-		if(brdfPdf != 0){
-			outRadiance.set(incidentRad.clone().mul(outColor).mul(cosTheta).div(brdfPdf*1.1));
-		}
+		double cosTheta = Math.abs(iRec.normal.clone().normalize().dot(bsdfRecord.dir1.clone().normalize()));
+		outRadiance.add(incidentRad.clone().mul(outColor).mul(cosTheta).div(brdfPdf));
 		
 		
 		 /* 2. point light source:
@@ -150,7 +148,6 @@ public class BSDFSamplingIntegrator extends Integrator {
 					else {
 						Colord outBSDF = new Colord();
 						iRec.surface.getBSDF().eval(direction, ray.direction.clone().negate(), iRec.normal.clone(), outBSDF);
-//								iRec.surface.getBSDF().eval(direction, direction, iRec.normal, outBSDF);
 						Colord intensity = new Colord();
 						l.eval(ray, intensity); // intensity
 						Colord L = new Colord(intensity.mul(outBSDF).mul(nDotL/distanceSq));
