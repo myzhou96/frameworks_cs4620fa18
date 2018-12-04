@@ -61,25 +61,29 @@ public class BSDFSamplingIntegrator extends Integrator {
        // look up lighting in that direction and get incident radiance.
        // Before you calculate the reflected radiance, you need to check whether the probability value
        // from bsdf sample is 0.
-		if (iRec.surface != null) { //not a light source
+		
+		//incoming/light: light - intersection (going from light towards the intersection)
+		//outgoing/view: ray.direction.clone().negate() 
+		//ray is from point to the camera
+		
+		if (iRec.surface != null) { 
 			Light lightSource = iRec.surface.getLight();
-			if (lightSource != null) {
-				// generating sample from BSDF
+			if (lightSource == null) { //not a light source
+				// generating sample from BSDF, should definitely be view ray + surface normal
 				BSDFSamplingRecord record = new BSDFSamplingRecord(ray.direction.clone().negate(), iRec.normal); 
 				Colord outColor = new Colord();
 				Vector2d seed = new Vector2d(Math.random(), Math.random());
-				iRec.surface.getBSDF().sample(record, seed, outColor);
-//				scene.getEnvironment().sample(seed, outDirection, outRadiance)
+				iRec.surface.getBSDF().sample(record, seed, outColor); //outColor here is our brdf
 				//trace the ray
 				Ray bsdfRay = new Ray(iRec.location, record.dir2.normalize());
 				IntersectionRecord iRec2 = new IntersectionRecord();
 				Colord incidentRad = new Colord();
+				
 				if(scene.getFirstIntersection(iRec2, bsdfRay)){
 					//for discrete directions, shade the ray recursively to get incident radiance
 					if(record.isDiscrete){
-						//shade or shadeRay
-						//incorrect parameters right now
-						shade(incidentRad, scene, bsdfRay, iRec2, depth-1); 
+//						Ray intersectionRay2 = new Ray(iRec2.location, record.dir2.normalize());
+						RayTracer.shadeRay(incidentRad, scene, bsdfRay, depth);
 						
 					}
 					else{
@@ -96,8 +100,12 @@ public class BSDFSamplingIntegrator extends Integrator {
 				else{
 					//hit nothing
 					//look up incident radiance from the environment
-					scene.getEnvironment().eval(ray.direction.clone().negate(), incidentRad);
+//					scene.getEnvironment().eval(ray.direction.clone().negate(), incidentRad);
 				}
+				
+				//compute the estimate for reflected radiance as incident radiance * brdf * cos theta / pdf
+//				double cosTheta = Math.abs(iRec.normal.dot(record.dir2));
+//				outRadiance.add(incidentRad.clone().mul(cosTheta));
 				
 				//STEP 2
 				for (Light l : scene.getLights()) {
@@ -124,7 +132,9 @@ public class BSDFSamplingIntegrator extends Integrator {
 				}
 			}
 			else{
-
+//				Colord surfaceRad = new Colord();
+//				iRec.location.clone().sub(f)
+//				iRec.surface.getLight().eval(shadowRay, surfaceRad); what goes in shadowray here
 			}
 			
 		}
