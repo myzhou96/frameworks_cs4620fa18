@@ -159,7 +159,10 @@ public class LightSamplingIntegrator extends Integrator {
 			bsdfRay.makeOffsetRay();
 			RayTracer.shadeRay(recursiveRad, scene, bsdfRay, depth + 1);
 			double cosTheta = Math.abs(iRec.normal.clone().normalize().dot(bsdfRecord.dir1.clone().normalize()));
-			outRadiance.add(recursiveRad.clone().mul(brdfColor).mul(cosTheta).div(brdfPdf));
+			if(brdfPdf != 0){
+				outRadiance.add(recursiveRad.clone().mul(brdfColor).mul(cosTheta).div(brdfPdf));
+			}
+			
 			
 		}
 	}
